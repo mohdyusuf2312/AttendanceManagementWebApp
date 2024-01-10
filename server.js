@@ -54,6 +54,36 @@ const attendanceSchema = new mongoose.Schema({
 const Student = mongoose.model('Student', studentSchema);
 const Attendance = mongoose.model('Attendance', attendanceSchema);
 
+// Temporary credentials for validation (for demonstration purposes)
+const validCredentials = {
+    enrollmentNumber: 'XX0000',
+    facultyNumber: '00XXXXX000'
+};
+
+// Handle the login form submission
+app.post('/Slogin', (req, res) => {
+    const { 'enrollment-number': enrollmentNumber, 'faculty-number': facultyNumber } = req.body;
+
+    // Check if the provided credentials match
+    if (enrollmentNumber === validCredentials.enrollmentNumber && facultyNumber === validCredentials.facultyNumber) {
+        // Redirect to student dashboard on successful login
+        res.redirect('/student/studentDashboard.html');
+    } else {
+        // If credentials are incorrect, send back to the login page with an error message
+        res.send('Invalid credentials. Please try again.');
+    }
+});
+
+app.post("/Tlogin", (req, res) => {
+    //
+    res.redirect('/teacher/teacherDashboard.html');
+});
+
+app.post("/Plogin", (req, res) => {
+    //
+    res.redirect('/parent/parentDashboard.html');
+});
+
 // Endpoint to fetch cumulative attendance
 app.get('/api/attendance', async (req, res) => {
     const enrollmentNumber = '123456'; // Replace with dynamic data from authenticated user
