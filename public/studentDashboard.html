@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link CSS  -->
+    <link rel="stylesheet" href="./styles.css">
+
+    <!-- Link Favicon  -->
+    <link rel="shortcut icon" href="./assets/favicon.svg" type="image/x-icon">
+    
+    <title>Student Dashboard - AMU Attendance Portal</title>
+</head>
+<body>
+    <div class="Dashboard-container">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="./studentDashboard.html"><img src="./assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+                <!-- Dropdown Menu with Student Image -->
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        <img id="student-image" src="./assets/default-student.png" alt="Student Image" class="student-image"> 
+                        Student Name &#9662;
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
+                        <a href="./studentLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section with Image Slideshow -->
+        <section class="hero-section">
+            <div class="slideshow-container">
+                <div class="slide fade">
+                    <img src="./assets/amu1.jpg" class="slide-image" alt="AMU Image 1">
+                </div>
+                <div class="slide fade">
+                    <img src="./assets/amu2.jpeg" class="slide-image" alt="AMU Image 2">
+                </div>
+                <div class="slide fade">
+                    <img src="./assets/amu3.png" class="slide-image" alt="AMU Image 3">
+                </div>
+                <div class="slide fade">
+                    <img src="./assets/amu4.jpg" class="slide-image" alt="AMU Image 4">
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Section -->
+        <section class="cards-section">
+            <!-- Academic Calendar Card -->
+            <div class="card">
+                <h3>Academic Calendar</h3>
+                <p><a href="./assets/academic-calender2024-25.pdf" download><i class="fa-solid fa-file-arrow-down fa-shake"></i> Click to download Academic Calendar 2024-25</a></p>
+            </div>
+
+            <!-- Class Attendance Card -->
+            <div class="card">
+                <h3>Class Attendance</h3>
+                <p><a href="./subjectWiseAttendance.html"><i class="fa-solid fa-table fa-fade"></i> View Date wise Attendance</a></p>
+                <p><a href="./cumulativeAttendance.html"><i class="fa-solid fa-table fa-fade"></i> Cumulative Attendance Report</a></p>
+            </div>
+
+            <!-- Result Card -->
+            <div class="card">
+                <h3>Result</h3>
+                <p><a href="https://ccae.amucontrollerexams.com/result_display/loginmodalresultdisplaybyfacno.php" target="_blank"><i class="fa-solid fa-square-poll-vertical fa-fade"></i> Click for examination result</a></p>
+            </div>
+
+            <!-- AMU Papers Card -->
+            <div class="card">
+                <h3>AMU Papers</h3>
+                <p><a href="https://amupapers.live/" target="_blank"><i class="fa-regular fa-newspaper fa-fade"></i> Click here to get previous year question papers.</a></p>
+            </div>
+
+            <!-- Library Card -->
+            <div class="card">
+                <h3>Library</h3>
+                <p><a href="https://amu.refread.com/#/home" target="_blank"><i class="fa-solid fa-book fa-fade"></i> Click here to access Library Resources.</a></p>
+            </div>
+        </section>
+
+        <footer>
+            <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
+        </footer>
+    </div>
+
+    <script src="./script/scripts.js"></script>
+    <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+    <script src="./script/slideshow.js"></script>
+    <script>
+        // Fetch student image using AJAX
+        function fetchStudentImage() {
+            fetch('http://localhost:3000/api/student-image')
+                .then(response => response.json())
+                .then(data => {
+                    const studentImage = document.getElementById('student-image');
+                    studentImage.src = data.image_url; // Update the src attribute with the fetched image URL
+                })
+                .catch(error => {
+                    console.error('Error fetching student image:', error);
+                });
+        }
+
+        // Call the function to fetch student image when the page loads
+        window.onload = fetchStudentImage;
+    </script>
+</body>
+</html>
