@@ -12,7 +12,7 @@ app.use(cors());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '', // replace with your MySQL password
+    password: process.env.PASSWORD, // replace with your MySQL password
     database: 'amu_attendance'
 });
 
