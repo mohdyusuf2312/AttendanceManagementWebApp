@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const mysql = require('mysql2');
+const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
@@ -8,85 +8,99 @@ const port = 3000;
 
 // Enable CORS
 app.use(cors());
+app.use(express.json()); // Enable JSON parsing for POST requests
 
-// MySQL database connection
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: process.env.PASSWORD, // replace with your MySQL password
-    database: 'amu_attendance'
+// MongoDB connection using Mongoose
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch((err) => {
+    console.error('MongoDB connection failed:', err);
 });
 
-// Connect to the database
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err);
-        return;
-    }
-    console.log('Connected to MySQL database');
+// MongoDB Schemas and Models
+const studentSchema = new mongoose.Schema({
+    enrollment_number: String,
+    student_name: String,
+    father_name: String,
+    department: String,
+    course: String,
+    semester: String,
+    dob: Date,
+    image_url: { type: String, default: '/New/assets/default-student.png' },
+    cumulative_attendance_percentage: Number
 });
+
+const attendanceSchema = new mongoose.Schema({
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+    date: { type: Date, default: Date.now },
+    subject: String,
+    status: { type: String, enum: ['present', 'absent', 'late'] }
+});
+
+const Student = mongoose.model('Student', studentSchema);
+const Attendance = mongoose.model('Attendance', attendanceSchema);
 
 // Endpoint to fetch cumulative attendance
-app.get('/api/attendance', (req, res) => {
+app.get('/api/attendance', async (req, res) => {
     const enrollmentNumber = '123456'; // Replace with dynamic data
-    const facultyNumber = 'FAC001'; // Replace with dynamic data
 
-    const sql = `SELECT cumulative_attendance_percentage FROM student_attendance WHERE enrollment_number = ? AND faculty_number = ?`;
-    db.query(sql, [enrollmentNumber, facultyNumber], (err, results) => {
-        if (err) {
-            console.error('Error fetching data:', err);
-            res.status(500).json({ error: 'Failed to fetch data' });
-            return;
-        }
-
-        if (results.length > 0) {
-            res.json(results[0]);
+    try {
+        const student = await Student.findOne({ enrollment_number: enrollmentNumber });
+        if (student) {
+            res.json({ cumulative_attendance_percentage: student.cumulative_attendance_percentage });
         } else {
             res.json({ cumulative_attendance_percentage: 'No data found' });
         }
-    });
+    } catch (err) {
+        console.error('Error fetching data:', err);
+        res.status(500).json({ error: 'Failed to fetch data' });
+    }
 });
 
 // Endpoint to fetch student image
-app.get('/api/student-image', (req, res) => {
+app.get('/api/student-image', async (req, res) => {
     const enrollmentNumber = '123456'; // Replace with dynamic data
 
-    const sql = `SELECT image_url FROM students WHERE enrollment_number = ?`;
-    db.query(sql, [enrollmentNumber], (err, results) => {
-        if (err) {
-            console.error('Error fetching student image:', err);
-            res.status(500).json({ error: 'Failed to fetch student image' });
-            return;
-        }
-
-        if (results.length > 0) {
-            res.json(results[0]);
+    try {
+        const student = await Student.findOne({ enrollment_number: enrollmentNumber });
+        if (student) {
+            res.json({ image_url: student.image_url });
         } else {
             res.json({ image_url: '/New/assets/default-student.png' });
         }
-    });
+    } catch (err) {
+        console.error('Error fetching student image:', err);
+        res.status(500).json({ error: 'Failed to fetch student image' });
+    }
 });
 
 // Endpoint to fetch student profile
-app.get('/api/student-profile', (req, res) => {
+app.get('/api/student-profile', async (req, res) => {
     const enrollmentNumber = '123456'; // Replace with dynamic data
 
-    const sql = `SELECT enrollment_number, student_name, father_name, department, course, semester, dob FROM students WHERE enrollment_number = ?`;
-    db.query(sql, [enrollmentNumber], (err, results) => {
-        if (err) {
-            console.error('Error fetching student profile:', err);
-            res.status(500).json({ error: 'Failed to fetch student profile' });
-            return;
-        }
-
-        if (results.length > 0) {
-            res.json(results[0]); // Send the first result as JSON
+    try {
+        const student = await Student.findOne({ enrollment_number: enrollmentNumber });
+        if (student) {
+            res.json({
+                enrollment_number: student.enrollment_number,
+                student_name: student.student_name,
+                father_name: student.father_name,
+                department: student.department,
+                course: student.course,
+                semester: student.semester,
+                dob: student.dob
+            });
         } else {
             res.status(404).json({ error: 'Student not found' });
         }
-    });
+    } catch (err) {
+        console.error('Error fetching student profile:', err);
+        res.status(500).json({ error: 'Failed to fetch student profile' });
+    }
 });
-
 
 // Start the server
 app.listen(port, () => {
