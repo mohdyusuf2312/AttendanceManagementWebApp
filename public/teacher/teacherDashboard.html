@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link CSS  -->
+    <link rel="stylesheet" href="/AttendanceManagementWebApp/public/styles.css">
+
+    <!-- Link Favicon  -->
+    <link rel="shortcut icon" href="/AttendanceManagementWebApp/public/assets/favicon.svg" type="image/x-icon">
+    
+    <title>Teacher Dashboard - AMU Attendance Portal</title>
+</head>
+<body>
+    <div class="Dashboard-container">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="./teacherDashboard.html"><img src="/AttendanceManagementWebApp/public/assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+                <!-- Dropdown Menu -->
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        <img id="teacher-image" src="/AttendanceManagementWebApp/public/assets/user'sPic.jpeg" alt="Teacher Image" class="student-image"> 
+                        Teacher Name &#9662;
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
+                        <a href="./teacherLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section with Image Slideshow -->
+        <section class="hero-section">
+            <div class="slideshow-container">
+                <div class="slide fade">
+                    <img src="/AttendanceManagementWebApp/public/assets/amu1.jpg" class="slide-image" alt="AMU Image 1">
+                </div>
+                <div class="slide fade">
+                    <img src="/AttendanceManagementWebApp/public/assets/amu2.jpeg" class="slide-image" alt="AMU Image 2">
+                </div>
+                <div class="slide fade">
+                    <img src="/AttendanceManagementWebApp/public/assets/amu3.png" class="slide-image" alt="AMU Image 3">
+                </div>
+                <div class="slide fade">
+                    <img src="/AttendanceManagementWebApp/public/assets/amu4.jpg" class="slide-image" alt="AMU Image 4">
+                </div>
+            </div>
+        </section>
+
+        <!-- Course Batch List Section -->
+        <section class="cards-section">
+            <div class="card">
+                <h3>Select Batch</h3>
+                <p><a href="./courseList.html?course=MCA_1st_Year">MCA (1st Year)</a></p>
+                <p><a href="./courseList.html?course=MCA_2nd_Year">MCA (2nd Year)</a></p>
+                <p><a href="./courseList.html?course=MSc_Cyber_1st_Year">M.Sc Cyber (1st Year)</a></p>
+                <p><a href="./courseList.html?course=MSc_Cyber_2nd_Year">M.Sc Cyber (2nd Year)</a></p>
+                <p><a href="./courseList.html?course=BSc_1st_Year">B.Sc (1st Year)</a></p>
+                <p><a href="./courseList.html?course=BSc_2nd_Year">B.Sc (2nd Year)</a></p>
+                <p><a href="./courseList.html?course=BSc_3rd_Year">B.Sc (3rd Year)</a></p>
+            </div>
+        </section>
+
+        <footer>
+            <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
+        </footer>
+    </div>
+
+    <script src="/AttendanceManagementWebApp/public/script/scripts.js"></script>
+    <script src="/AttendanceManagementWebApp/public/script/slideshow.js"></script>
+    <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+    <script>
+        // Fetch teacher image using AJAX
+        function fetchTeacherImage() {
+            fetch('http://localhost:3000/api/teacher-image')
+                .then(response => response.json())
+                .then(data => {
+                    const teacherImage = document.getElementById('teacher-image');
+                    teacherImage.src = data.image_url; // Update the src attribute with the fetched image URL
+                })
+                .catch(error => {
+                    console.error('Error fetching teacher image:', error);
+                });
+        }
+
+        // Call the function to fetch teacher image when the page loads
+        window.onload = fetchTeacherImage;
+    </script>
+</body>
+</html>
