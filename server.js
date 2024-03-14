@@ -69,7 +69,7 @@ app.get('/api/student-image', async (req, res) => {
         if (student) {
             res.json({ image_url: student.image_url });
         } else {
-            res.json({ image_url: '/New/assets/default-student.png' });
+            res.json({ image_url: "/AttendanceManagementWebApp/public/assets/user'sPic.jpeg" });
         }
     } catch (err) {
         console.error('Error fetching student image:', err);
