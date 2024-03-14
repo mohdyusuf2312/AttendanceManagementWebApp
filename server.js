@@ -29,7 +29,7 @@ const studentSchema = new mongoose.Schema({
     course: String,
     semester: String,
     dob: Date,
-    image_url: { type: String, default: '/New/assets/default-student.png' },
+    image_url: { type: String, default: "/AttendanceManagementWebApp/public/assets/user'sPic.jpeg" },
     cumulative_attendance_percentage: Number
 });
 
