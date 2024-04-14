@@ -2,6 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const ejs = require("ejs");
+const path = require("path");
+const router = express.Router();
+const Attendance = require('../models/Attendance');
 
 const app = express();
 const port = 3000;
@@ -9,6 +13,11 @@ const port = 3000;
 // Enable CORS
 app.use(cors());
 app.use(express.json()); // Enable JSON parsing for POST requests
+app.use(express.urlencoded({urlencoded:true}))
+
+app.set("view engine", "ejs")
+
+app.use(express.static(path.join(__dirname, "public")))
 
 // MongoDB connection using Mongoose
 mongoose.connect(process.env.MONGO_URI, {
@@ -101,6 +110,43 @@ app.get('/api/student-profile', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch student profile' });
     }
 });
+
+// Fetch cumulative attendance for a student
+router.get('/cumulative-attendance', async (req, res) => {
+    try {
+        const studentId = req.user._id; // Assuming user is authenticated and their ID is available
+
+        // Fetch attendance data grouped by course
+        const attendanceData = await Attendance.aggregate([
+            { $match: { studentId } },
+            {
+                $group: {
+                    _id: '$subject', // Group by course (subject)
+                    classesHeld: { $sum: 1 },
+                    present: { $sum: { $cond: [{ $eq: ['$status', 'present'] }, 1, 0] } }
+                }
+            }
+        ]);
+
+        // Map to the format required by the frontend
+        const formattedData = attendanceData.map(item => ({
+            courseCode: item._id,
+            classesHeld: item.classesHeld,
+            present: item.present
+        }));
+
+        res.json(formattedData);
+    } catch (err) {
+        console.error('Error fetching cumulative attendance:', err);
+        res.status(500).json({ error: 'Failed to fetch cumulative attendance' });
+    }
+});
+
+module.exports = router;
+
+app.get("/admin", function(req, res){
+    res.render("admin")
+})
 
 // Start the server
 app.listen(port, () => {
