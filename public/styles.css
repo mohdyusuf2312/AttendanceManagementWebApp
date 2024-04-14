@@ -404,6 +404,26 @@ input:checked + .slider:before {
     transform: translateX(24px);
 }
 
+/* Styling for form */
+#attendance-form {
+    display: flex;
+    flex-direction: row ;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#attendance-form label {
+    font-weight: bold;
+}
+
+#attendance-form input, #attendance-form select {
+    padding: 6px;
+    font-size: 14px;
+    width: 30%;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
 /* Styling for attendance table */
 #attendance-table {
     width: 100%;
@@ -433,6 +453,11 @@ input:checked + .slider:before {
 @media (max-width: 576px) {
     .container {
         min-width: 50%;
+    }
+
+    #attendance-form {
+        display: flex;
+        flex-direction: column;
     }
 
     .student-enrollment {
@@ -487,6 +512,11 @@ input:checked + .slider:before {
 @media (min-width: 576px) and (max-width: 767px) {
     .container {
         min-width: 50%;
+    }
+
+    #attendance-form {
+        display: flex;
+        flex-direction: column;
     }
 
     .slideshow-container, .slide-image {
