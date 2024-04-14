@@ -142,6 +142,50 @@ router.get('/cumulative-attendance', async (req, res) => {
     }
 });
 
+// Fetch attendance data by date range and subject
+router.get('/date-wise-attendance', async (req, res) => {
+    const { from, to, subject } = req.query;
+    const studentId = req.user._id; // Assuming user is authenticated and their ID is available
+
+    try {
+        const attendanceData = await Attendance.find({
+            studentId,
+            subject,
+            date: { $gte: new Date(from), $lte: new Date(to) }
+        }).sort({ date: 1 });
+
+        // Format the data for the frontend
+        const formattedData = attendanceData.map(item => ({
+            date: item.date.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+            status: item.status
+        }));
+
+        res.json(formattedData);
+    } catch (err) {
+        console.error('Error fetching attendance data:', err);
+        res.status(500).json({ error: 'Failed to fetch attendance data' });
+    }
+});
+
+// Fetch subjects for a student
+router.get('/subjects', async (req, res) => {
+    const studentId = req.user._id; // Assuming user is authenticated and their ID is available
+
+    try {
+        // Example: Fetch subjects for the student (This may vary depending on your DB structure)
+        const subjects = await Subject.find({ studentId });
+        const formattedSubjects = subjects.map(subject => ({
+            code: subject.code,
+            name: subject.name
+        }));
+
+        res.json(formattedSubjects);
+    } catch (err) {
+        console.error('Error fetching subjects:', err);
+        res.status(500).json({ error: 'Failed to fetch subjects' });
+    }
+});
+
 module.exports = router;
 
 app.get("/admin", function(req, res){
