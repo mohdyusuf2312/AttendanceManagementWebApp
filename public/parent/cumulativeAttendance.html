@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cumulative Attendance Report - AMU Attendance Portal</title>
+    <link rel="stylesheet" href="/AttendanceManagementWebApp/public/styles.css">
+    <link rel="shortcut icon" href="/AttendanceManagementWebApp/public/assets/favicon.svg" type="image/x-icon">
+</head>
+<body>
+    <div class="Dashboard-container">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/AttendanceManagementWebApp/public/parent/parentDashboard.html"><img src="/AttendanceManagementWebApp/public/assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        <img id="student-image" src="/AttendanceManagementWebApp/public/assets/user'sPic.jpeg" alt="Student Image" class="student-image">
+                        Student Name &#9662;
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
+                        <a href="./parentLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Cumulative Attendance Card Section -->
+        <section class="cards-section">
+            <div class="card" style="width: 75%;">
+                <h3>Cumulative Attendance Report</h3>
+                <table id="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Course Code</th>
+                            <th>Classes Held</th>
+                            <th>Present</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendance-data">
+                        <!-- Rows will be dynamically generated here -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4"><strong>Cumulative Attendance Percentage</strong></td>
+                            <td id="cumulative-percentage">--</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+        <footer>
+            <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
+        </footer>
+    </div>
+
+    <script src="/AttendanceManagementWebApp/public/script/scripts.js"></script>
+    <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+
+    <script>
+        // Fetch student attendance data from API and populate the table
+        function fetchAttendanceData() {
+            fetch('http://localhost:3000/api/cumulative-attendance')
+                .then(response => response.json())
+                .then(data => {
+                    const attendanceDataElement = document.getElementById('attendance-data');
+                    let totalHeld = 0;
+                    let totalPresent = 0;
+
+                    // Populate the table with data from the server
+                    data.forEach((attendance, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${attendance.courseCode}</td>
+                            <td>${attendance.classesHeld}</td>
+                            <td>${attendance.present}</td>
+                            <td>${((attendance.present / attendance.classesHeld) * 100).toFixed(2)}%</td>
+                        `;
+                        attendanceDataElement.appendChild(row);
+
+                        totalHeld += attendance.classesHeld;
+                        totalPresent += attendance.present;
+                    });
+
+                    // Calculate and display cumulative percentage
+                    const cumulativePercentage = ((totalPresent / totalHeld) * 100).toFixed(2);
+                    document.getElementById('cumulative-percentage').textContent = `${cumulativePercentage}%`;
+                })
+                .catch(error => {
+                    console.error('Error fetching cumulative attendance:', error);
+                });
+        }
+
+        // Call the function when the page loads
+        window.onload = fetchAttendanceData;
+    </script>
+</body>
+</html>
