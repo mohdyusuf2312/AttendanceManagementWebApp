@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Link CSS  -->
-    <link rel="stylesheet" href="/AttendanceManagementWebApp/public/styles.css">
+    <link rel="stylesheet" href="../styles.css">
 
     <!-- Link Favicon  -->
-    <link rel="shortcut icon" href="/AttendanceManagementWebApp/public/assets/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="../assets/favicon.svg" type="image/x-icon">
     
     <title>Student Dashboard - AMU Attendance Portal</title>
 </head>
@@ -16,11 +16,11 @@
         <!-- Navigation Bar -->
         <nav class="navbar">
             <div class="navbar-container">
-                <a href="./studentDashboard.html"><img src="/AttendanceManagementWebApp/public/assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+                <a href="./studentDashboard.html"><img src="../assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
                 <!-- Dropdown Menu with Student Image -->
                 <div class="dropdown">
                     <button class="dropbtn">
-                        <img id="student-image" src="/AttendanceManagementWebApp/public/assets/user'sPic.jpeg" alt="Student Image" class="student-image"> 
+                        <img id="student-image" src="../assets/user'sPic.jpeg" alt="Student Image" class="student-image"> 
                         Student Name &#9662;
                     </button>
                     <div class="dropdown-content">
@@ -35,16 +35,16 @@
         <section class="hero-section">
             <div class="slideshow-container">
                 <div class="slide fade">
-                    <img src="/AttendanceManagementWebApp/public/assets/amu1.jpg" class="slide-image" alt="AMU Image 1">
+                    <img src="../assets/amu1.jpg" class="slide-image" alt="AMU Image 1">
                 </div>
                 <div class="slide fade">
-                    <img src="/AttendanceManagementWebApp/public/assets/amu2.jpeg" class="slide-image" alt="AMU Image 2">
+                    <img src="../assets/amu2.jpeg" class="slide-image" alt="AMU Image 2">
                 </div>
                 <div class="slide fade">
-                    <img src="/AttendanceManagementWebApp/public/assets/amu3.png" class="slide-image" alt="AMU Image 3">
+                    <img src="../assets/amu3.png" class="slide-image" alt="AMU Image 3">
                 </div>
                 <div class="slide fade">
-                    <img src="/AttendanceManagementWebApp/public/assets/amu4.jpg" class="slide-image" alt="AMU Image 4">
+                    <img src="../assets/amu4.jpg" class="slide-image" alt="AMU Image 4">
                 </div>
             </div>
         </section>
@@ -54,7 +54,7 @@
             <!-- Academic Calendar Card -->
             <div class="card">
                 <h3>Academic Calendar</h3>
-                <p><a href="/AttendanceManagementWebApp/public/assets/academic-calender2024-25.pdf" download><i class="fa-solid fa-file-arrow-down fa-shake"></i> Click to download Academic Calendar 2024-25</a></p>
+                <p><a href="../assets/academic-calender2024-25.pdf" download><i class="fa-solid fa-file-arrow-down fa-shake"></i> Click to download Academic Calendar 2024-25</a></p>
             </div>
 
             <!-- Class Attendance Card -->
@@ -88,9 +88,8 @@
         </footer>
     </div>
 
-    <script src="/AttendanceManagementWebApp/public/script/scripts.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
-    <script src="/AttendanceManagementWebApp/public/script/slideshow.js"></script>
+    <script src="../script/slideshow.js"></script>
     <script>
         // Fetch student image using AJAX
         function fetchStudentImage() {
