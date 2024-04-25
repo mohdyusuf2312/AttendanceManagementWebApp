@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Link CSS  -->
-    <link rel="stylesheet" href="/AttendanceManagementWebApp/public/styles.css">
+    <link rel="stylesheet" href="../styles.css">
 
     <!-- Link Favicon  -->
-    <link rel="shortcut icon" href="/AttendanceManagementWebApp/public/assets/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="../assets/favicon.svg" type="image/x-icon">
     
     <title>Student Login - AMU Attendance Portal</title>
 </head>
@@ -16,12 +16,12 @@
         <div class="container">
 
             <!-- logo with name  -->
-            <a href="/AttendanceManagementWebApp/public/index.html" class="logo"><img src="/AttendanceManagementWebApp/public/assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+            <a href="../index.html" class="logo"><img src="../assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
             <!-- Student Login Heading -->
             <h2 class="login-heading">Student Login</h2>
     
             <!-- Login Form -->
-            <form class="login-form">
+            <form action="/Slogin" method="post" class="login-form">
                 <!-- Enrollment Number Input -->
                 <input type="text" id="enrollment-number" name="enrollment-number" placeholder="Enrollment Number (XX0000)" required>
     
@@ -29,7 +29,7 @@
                 <input type="password" id="faculty-number" name="faculty-number" placeholder="Faculty Number (00XXXXX000)" required>
     
                 <!-- Login Button -->
-                <button type="submit" class="button" onclick="redirectToStudentDashboard()">Login <i class="fa-solid fa-person-walking fa-fade"></i> <i class="fa-solid fa-arrow-right-to-bracket fa-fade"></i></button>
+                <button type="submit" class="button" >Login <i class="fa-solid fa-person-walking fa-fade"></i> <i class="fa-solid fa-arrow-right-to-bracket fa-fade"></i></button>
             </form>
         </div>
         
@@ -38,7 +38,6 @@
         </footer>
     </div>
 
-    <script src="/AttendanceManagementWebApp/public/script/scripts.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
 </body>
 </html>
