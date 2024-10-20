@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Link CSS  -->
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="/AttendanceManagementWebApp/public/styles.css">
+
     <!-- Link Favicon  -->
-    <link rel="shortcut icon" href="./assets/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/AttendanceManagementWebApp/public/assets/favicon.svg" type="image/x-icon">
     
     <title>Student Profile - AMU Attendance Portal</title>
 </head>
@@ -15,16 +16,16 @@
         <!-- Navigation Bar -->
         <nav class="navbar">
             <div class="navbar-container">
-                <a href="./studentDashboard.html"><img src="./assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+                <a href="./parentDashboard.html"><img src="/AttendanceManagementWebApp/public/assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
                 <!-- Dropdown Menu with Student Image -->
                 <div class="dropdown">
                     <button class="dropbtn">
-                        <img id="student-image" src="./assets/default-student.png" alt="Student Image" class="student-image"> 
+                        <img id="student-image" src="/AttendanceManagementWebApp/public/assets/default-student.png" alt="Student Image" class="student-image"> 
                         Student Name &#9662;
                     </button>
                     <div class="dropdown-content">
                         <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
-                        <a href="./studentLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                        <a href="./parentLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
                     </div>
                 </div>
             </div>
@@ -45,12 +46,14 @@
                 </div>
             </div>
         </div>
+
         <footer>
             <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
         </footer>
     </div>
+
     <!-- JavaScript to Fetch Student Data -->
-    <script src="./script/scripts.js"></script>
+    <script src="/AttendanceManagementWebApp/public/script/scripts.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
     <script>
         // Fetch student details using AJAX
@@ -77,6 +80,7 @@
                     document.getElementById('dob').textContent = 'Error';
                 });
         }
+
         // Call the function to fetch student profile when the page loads
         window.onload = fetchStudentProfile;
     </script>
