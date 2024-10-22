@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Wise Attendance Report - AMU Attendance Portal</title>
+    <link rel="stylesheet" href="/AttendanceManagementWebApp/public/styles.css">
+    <link rel="shortcut icon" href="/AttendanceManagementWebApp/public/assets/favicon.svg" type="image/x-icon">
+</head>
+<body>
+    <div class="Dashboard-container">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="./studentDashboard.html"><img src="/AttendanceManagementWebApp/public/assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        <img id="student-image" src="/AttendanceManagementWebApp/public/assets/user'sPic.jpeg" alt="Student Image" class="student-image">
+                        Student Name &#9662;
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
+                        <a href="./studentLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Date Wise Attendance Card Section -->
+        <section class="cards-section">
+            <div class="card" style="min-width: 75%;">
+                <h3>Date Wise Attendance Report</h3>
+                <form id="attendance-form">
+                    <!-- Date Fields -->
+                    <label for="from-date">From Date:</label>
+                    <input type="date" id="from-date" name="from-date" required>
+
+                    <label for="to-date">To Date:</label>
+                    <input type="date" id="to-date" name="to-date" required>
+
+                    <!-- Subject Dropdown -->
+                    <label for="subject-dropdown">Select Subject:</label>
+                    <select id="subject-dropdown" name="subject-dropdown" required>
+                        <option value="">Select a subject</option>
+                        <!-- Subjects will be dynamically added here -->
+                    </select>
+                </form>
+
+                <!-- Attendance Table -->
+                <table id="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Course Code</th>
+                            <th>Attendance Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendance-data">
+                        <!-- Attendance data will be dynamically generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>
+            <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
+        </footer>
+    </div>
+
+    <script src="/AttendanceManagementWebApp/public/script/scripts.js"></script>
+    <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+
+    <script>
+        // Function to fetch subjects for the student and populate the dropdown
+        function fetchSubjects() {
+            fetch('http://localhost:3000/api/subjects')
+                .then(response => response.json())
+                .then(data => {
+                    const subjectDropdown = document.getElementById('subject-dropdown');
+                    data.forEach(subject => {
+                        const option = document.createElement('option');
+                        option.value = subject.code;
+                        option.textContent = subject.name;
+                        subjectDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching subjects:', error);
+                });
+        }
+
+        // Function to fetch attendance data based on date range and subject
+        function fetchAttendanceData() {
+            const fromDate = document.getElementById('from-date').value;
+            const toDate = document.getElementById('to-date').value;
+            const selectedSubject = document.getElementById('subject-dropdown').value;
+
+            if (!fromDate || !toDate || !selectedSubject) {
+                alert('Please select both dates and a subject.');
+                return;
+            }
+
+            fetch(`http://localhost:3000/api/date-wise-attendance?from=${fromDate}&to=${toDate}&subject=${selectedSubject}`)
+                .then(response => response.json())
+                .then(data => {
+                    const attendanceDataElement = document.getElementById('attendance-data');
+                    attendanceDataElement.innerHTML = ''; // Clear previous data
+
+                    // Populate table with attendance data
+                    data.forEach(attendance => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${attendance.date}</td>
+                            <td>${attendance.status}</td>
+                        `;
+                        attendanceDataElement.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching attendance data:', error);
+                });
+        }
+
+        // Event listener to automatically fetch attendance data when subject is selected
+        document.getElementById('subject-dropdown').addEventListener('change', fetchAttendanceData);
+
+        // Fetch subjects when the page loads
+        window.onload = fetchSubjects;
+    </script>
+</body>
+</html>
