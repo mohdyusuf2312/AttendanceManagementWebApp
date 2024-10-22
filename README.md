@@ -103,11 +103,22 @@ attendance-management-web-app/
 Contributions are welcome! Feel free to submit a pull request or open an issue if you have any suggestions for improving the application.
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 For any queries or issues, feel free to reach out to the project maintainer:
 
-Name: [Mohd Yusuf]
-Email: [mohdyusufr@gmail.com]
-GitHub: https://github.com/mohdyusuf2312
+[<img align="left" alt="gmail_icon" color="white" width="25px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/gmail.svg" />][gmail]
+[<img align="left" alt="linkedIn_icon" width="25px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />][linkedin]
+[<img align="left" alt="github_icon" width="25px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/github.svg" />][github]
+[<img align="left" alt="twitter_icon" width="25px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/twitter.svg" />][twitter]
+[<img align="left" alt="telegram_icon" width="25px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/telegram.svg" />][telegram]
+[<img align="left" alt="whatsapp_icon" width="25px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/whatsapp.svg" />][whatsapp]
+
+[gmail]: https://mohdyusufr@gmail.com
+[linkedin]: https://www.linkedin.com/in/mohdyusuf2312/
+[github]: https://www.github.com/mohdyusuf2312/
+[twitter]: https://www.twitter.com/mohdyusuf2312/
+[telegram]: https://t.me/MOHD0YUSUF
+[whatsapp]: https://api.whatsapp.com/send?phone=919084662330
+
