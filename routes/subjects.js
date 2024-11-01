@@ -9,7 +9,11 @@ router.get('/subjects', async (req, res) => {
 
     try {
         const subjects = await Subject.find({ studentIds: studentId });
-        res.json(subjects);
+        const formattedSubjects = subjects.map(subject => ({
+            code: subject.code,
+            name: subject.name
+        }));
+        res.json(formattedSubjects);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch subjects' });
     }
