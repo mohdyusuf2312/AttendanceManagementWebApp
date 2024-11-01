@@ -77,23 +77,4 @@ router.get('/date-wise-attendance', async (req, res) => {
     }
 });
 
-// Fetch subjects for a student
-router.get('/subjects', async (req, res) => {
-    const studentId = req.user._id; // Assuming user is authenticated and their ID is available
-
-    try {
-        // Example: Fetch subjects for the student (This may vary depending on your DB structure)
-        const subjects = await Subject.find({ studentId });
-        const formattedSubjects = subjects.map(subject => ({
-            code: subject.code,
-            name: subject.name
-        }));
-
-        res.json(formattedSubjects);
-    } catch (err) {
-        console.error('Error fetching subjects:', err);
-        res.status(500).json({ error: 'Failed to fetch subjects' });
-    }
-});
-
 module.exports = router;
