@@ -5,6 +5,10 @@ const cors = require('cors');
 const ejs = require("ejs");
 const path = require("path");
 
+const User = require('./models/User');
+
+const userRoutes = require('./routes/users');
+
 const app = express();
 const port = 3000;
 
@@ -31,58 +35,7 @@ mongoose.connect(process.env.MONGO_URI, {
     console.error('MongoDB connection failed:', err);
 });
 
-// MongoDB Schemas and Models
-const studentSchema = new mongoose.Schema({
-    enrollment_number: { type: String, unique: true, required: true },
-    student_name: { type: String, required: true },
-    father_name: String,
-    department: String,
-    course: String,
-    semester: String,
-    dob: Date,
-    image_url: { type: String, default: "/AttendanceManagementWebApp/public/assets/user'sPic.jpeg" },
-    cumulative_attendance_percentage: { type: Number, default: 0 }
-});
-
-const attendanceSchema = new mongoose.Schema({
-    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
-    date: { type: Date, default: Date.now },
-    subject: String,
-    status: { type: String, enum: ['present', 'absent', 'late'], required: true }
-});
-
-const Student = mongoose.model('Student', studentSchema);
-const Attendance = mongoose.model('Attendance', attendanceSchema);
-
-// Temporary credentials for validation (for demonstration purposes)
-const validCredentials = {
-    enrollmentNumber: 'XX0000',
-    facultyNumber: '00XXXXX000'
-};
-
-// Handle the login form submission
-app.post('/Slogin', (req, res) => {
-    const { 'enrollment-number': enrollmentNumber, 'faculty-number': facultyNumber } = req.body;
-
-    // Check if the provided credentials match
-    if (enrollmentNumber === validCredentials.enrollmentNumber && facultyNumber === validCredentials.facultyNumber) {
-        // Redirect to student dashboard on successful login
-        res.redirect('/student/studentDashboard.html');
-    } else {
-        // If credentials are incorrect, send back to the login page with an error message
-        res.send('Invalid credentials. Please try again.');
-    }
-});
-
-app.post("/Tlogin", (req, res) => {
-    //
-    res.redirect('/teacher/teacherDashboard.html');
-});
-
-app.post("/Plogin", (req, res) => {
-    //
-    res.redirect('/parent/parentDashboard.html');
-});
+app.use('/', userRoutes);
 
 // Endpoint to fetch cumulative attendance
 app.get('/api/attendance', async (req, res) => {
