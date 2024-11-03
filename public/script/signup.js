@@ -26,13 +26,13 @@ document.getElementById("signupForm").addEventListener("submit", async function 
 
         // Handle errors if they exist
         if (!response.ok) {
-            if (result.message === "Passwords do not match.") {
-                document.getElementById("passwordError").style.display = "block";
-                document.getElementById("passwordError").textContent = result.message;
-            }
             if (result.message === "Email is already registered.") {
                 document.getElementById("emailError").style.display = "block";
                 document.getElementById("emailError").textContent = result.message;
+            }
+            if (result.message === "Passwords do not match.") {
+                document.getElementById("passwordError").style.display = "block";
+                document.getElementById("passwordError").textContent = result.message;
             }
         } else {
             // Registration successful - redirect to login or success page
