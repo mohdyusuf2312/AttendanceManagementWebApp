@@ -10,6 +10,14 @@
     <link rel="shortcut icon" href="../assets/favicon.svg" type="image/x-icon">
     
     <title>Teacher Login - AMU Attendance Portal</title>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none; /* Initially hidden */
+        }
+    </style>
 </head>
 <body>
     <div class="footerFlex">
@@ -21,12 +29,14 @@
             <h2 class="login-heading">Teacher Login</h2>
     
             <!-- Login Form -->
-            <form action="/Tlogin" method="post" class="login-form">
+            <form id="teacherLoginForm" class="login-form">
                 <!-- Enrollment Number Input -->
                 <input type="email" id="email" name="email" placeholder="Email" required>
+                <span id="emailError" class="error-message">Email is not registered. Please do signup.</span>
     
                 <!-- Faculty Number Input -->
                 <input type="password" id="password" name="password" placeholder="Password" required>
+                <span id="passwordError" class="error-message">Incorrect password.</span>
     
                 <!-- Login Button -->
                 <button type="submit" class="button" >Login <i class="fa-solid fa-person-walking fa-fade"></i> <i class="fa-solid fa-arrow-right-to-bracket fa-fade"></i></button>
@@ -45,6 +55,48 @@
     </div>
 
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById("teacherLoginForm").addEventListener("submit", async function (e) {
+        e.preventDefault(); // Prevent form from submitting normally
 
+        // Clear previous error messages
+        document.getElementById("emailError").style.display = "none";
+        document.getElementById("passwordError").style.display = "none";
+
+        // Get form data
+        const loginData = {
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+        };
+
+        // Send data to backend using fetch API
+        try {
+            const response = await fetch("/teacherLogin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(loginData),
+            });
+
+            const result = await response.json();
+
+            // Handle errors if they exist
+            if (!response.ok) {
+                // Check for specific error messages
+                if (result.message === "Email is not registered. Please do signup.") {
+                    document.getElementById("emailError").style.display = "block";
+                    document.getElementById("emailError").textContent = result.message;
+                } else if (result.message === "Incorrect password.") {
+                    document.getElementById("passwordError").style.display = "block";
+                    document.getElementById("passwordError").textContent = result.message;
+                }
+            } else {
+                // Verification successful - redirect to the teacher dashboard
+                window.location.href = "../teacher/teacherDashboard.html";
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    });
+    </script>
 </body>
 </html>
