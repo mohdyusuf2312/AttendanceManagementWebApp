@@ -4,10 +4,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const ejs = require("ejs");
 const path = require("path");
-const User = require('./models/User');
-const Teacher = require('./models/Teacher');
 const userRoutes = require('./routes/users');
 const registerRoutes = require('./routes/register');
+const teacherLoginRoutes = require('./routes/teacherLogin');
 
 const app = express();
 const port = 3000;
@@ -34,6 +33,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
 
 app.use('/', userRoutes);
 app.use('/', registerRoutes);
+app.use('/', teacherLoginRoutes);
 
 // Endpoint to fetch cumulative attendance
 app.get('/api/attendance', async (req, res) => {
