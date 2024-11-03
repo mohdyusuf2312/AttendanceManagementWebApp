@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="shortcut icon" href="../assets/favicon.svg" type="image/x-icon">
+    <title>Teacher Signup - AMU Attendance Portal</title>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+    <div class="footerFlex">
+        <div class="container">
+            <!-- Logo with name -->
+            <a href="../index.html" class="logo"><img src="../assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+            <h2 class="login-heading">Teacher Signup</h2>
+
+            <!-- Signup Form -->
+            <form id="signupForm" class="login-form">
+                <input type="text" id="name" name="name" placeholder="Full Name" required>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <span id="emailError" class="error-message">Email is already registered.</span> <!-- Error message span for email -->
+
+                <input type="text" id="department" name="department" placeholder="Department" required>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                <span id="passwordError" class="error-message">Passwords do not match.</span> <!-- Error message span for password -->
+                
+                <button type="submit" class="button">Register</button>
+            </form>
+        </div>
+
+        <footer style="position: absolute; bottom: 0;">
+            <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
+        </footer>
+    </div>
+
+    <script src="../script/signup.js"></script>
+    <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+</body>
+</html>
