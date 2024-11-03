@@ -4,10 +4,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const ejs = require("ejs");
 const path = require("path");
-
 const User = require('./models/User');
-
+const Teacher = require('./models/Teacher');
 const userRoutes = require('./routes/users');
+const registerRoutes = require('./routes/register');
 
 const app = express();
 const port = 3000;
@@ -26,16 +26,14 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
 // MongoDB connection using Mongoose
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
+mongoose.connect(process.env.MONGO_URI).then(() => {
     console.log('Connected to MongoDB');
 }).catch((err) => {
     console.error('MongoDB connection failed:', err);
 });
 
 app.use('/', userRoutes);
+app.use('/', registerRoutes);
 
 // Endpoint to fetch cumulative attendance
 app.get('/api/attendance', async (req, res) => {
