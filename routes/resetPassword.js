@@ -45,8 +45,8 @@ router.post('/resetPassword/:token', async (req, res) => {
         // Hash the new password and update teacher's record
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         teacher.password = hashedPassword;
-        // teacher.resetPasswordToken = undefined; // Clear the reset token
-        // teacher.resetPasswordExpires = undefined; // Clear the expiry time
+        teacher.resetPasswordToken = undefined; // Clear the reset token
+        teacher.resetPasswordExpires = undefined; // Clear the expiry time
         await teacher.save();
 
         res.status(200).json({ message: "Password has been successfully reset." });
