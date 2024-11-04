@@ -19,7 +19,7 @@
     <div class="footerFlex">
         <div class="container">
             <!-- Logo with name -->
-            <a href="../index.html" class="logo"><img src="../assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+            <a href="./teacherLogin.html" class="logo"><img src="../assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
             <h2 class="login-heading">Teacher Signup</h2>
 
             <!-- Signup Form -->
@@ -42,7 +42,57 @@
         </footer>
     </div>
 
-    <script src="../script/signup.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", async function (e) {
+        e.preventDefault(); // Prevent form from submitting normally
+
+        // Clear previous error messages
+        document.getElementById("emailError").style.display = "none";
+        document.getElementById("passwordError").style.display = "none";
+
+        // Get form data
+        const formData = {
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            department: document.getElementById("department").value,
+            password: document.getElementById("password").value,
+            confirmPassword: document.getElementById("confirmPassword").value,
+        };
+
+        // Send data to backend using fetch API
+        try {
+            const response = await fetch("/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            // Handle errors if they exist
+            if (!response.ok) {
+                if (result.message === "Email is already registered.") {
+                    document.getElementById("emailError").style.display = "block";
+                    document.getElementById("emailError").textContent = result.message;
+                }
+                if (result.message === "Password must be at least 6 characters long.") {
+                    document.getElementById("passwordError").style.display = "block";
+                    document.getElementById("passwordError").textContent = result.message;
+                }
+                if (result.message === "Passwords do not match.") {
+                    document.getElementById("passwordError").style.display = "block";
+                    document.getElementById("passwordError").textContent = result.message;
+                }
+            } else {
+                // Registration successful - redirect to login or success page
+                alert("Registration successful!");
+                window.location.href = "../teacher/teacherLogin.html";
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    });
+    </script>
 </body>
 </html>
