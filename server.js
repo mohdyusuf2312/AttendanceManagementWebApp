@@ -8,6 +8,7 @@ const userRoutes = require('./routes/users');
 const registerRoutes = require('./routes/register');
 const teacherLoginRoutes = require('./routes/teacherLogin');
 const forgotPasswordRoute = require('./routes/forgotPassword');
+const resetPasswordRoute = require('./routes/resetPassword');
 
 const app = express();
 const port = 3000;
@@ -36,6 +37,7 @@ app.use('/', userRoutes);
 app.use('/', registerRoutes);
 app.use('/', teacherLoginRoutes);
 app.use('/', forgotPasswordRoute);
+app.use('/', resetPasswordRoute);
 
 // Endpoint to fetch cumulative attendance
 app.get('/api/attendance', async (req, res) => {
