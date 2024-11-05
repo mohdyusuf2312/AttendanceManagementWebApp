@@ -64,34 +64,6 @@
                 ${studentName} &#9662;
             `;
         });
-
-        // Fetch student details using AJAX
-        function fetchStudentProfile() {
-            fetch('http://localhost:3000/api/student-profile')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('enrollment-number').textContent = data.enrollment_number;
-                    document.getElementById('student-name').textContent = data.student_name;
-                    document.getElementById('father-name').textContent = data.father_name;
-                    document.getElementById('department').textContent = data.department;
-                    document.getElementById('course').textContent = data.course;
-                    document.getElementById('semester').textContent = data.semester;
-                    document.getElementById('dob').textContent = data.dob;
-                })
-                .catch(error => {
-                    console.error('Error fetching student profile:', error);
-                    document.getElementById('enrollment-number').textContent = 'Error';
-                    document.getElementById('student-name').textContent = 'Error';
-                    document.getElementById('father-name').textContent = 'Error';
-                    document.getElementById('department').textContent = 'Error';
-                    document.getElementById('course').textContent = 'Error';
-                    document.getElementById('semester').textContent = 'Error';
-                    document.getElementById('dob').textContent = 'Error';
-                });
-        }
-
-        // Call the function to fetch student profile when the page loads
-        window.onload = fetchStudentProfile;
     </script>
 </body>
 </html>
