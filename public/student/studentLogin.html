@@ -3,41 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link CSS  -->
     <link rel="stylesheet" href="../styles.css">
-
-    <!-- Link Favicon  -->
     <link rel="shortcut icon" href="../assets/favicon.svg" type="image/x-icon">
-    
     <title>Student Login - AMU Attendance Portal</title>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none; /* Initially hidden */
+        }
+    </style>
 </head>
 <body>
     <div class="footerFlex">
         <div class="container">
-
-            <!-- logo with name  -->
             <a href="../index.html" class="logo"><img src="../assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
-            <!-- Student Login Heading -->
             <h2 class="login-heading">Student Login</h2>
-    
-            <!-- Login Form -->
-            <form action="/login" method="post" class="login-form">
-                <!-- Enrollment Number Input -->
+            <form id="studentLoginForm" class="login-form">
                 <input type="text" id="enrollment-number" name="enrollment_number" placeholder="Enrollment Number (XX0000)" required>
-    
-                <!-- Faculty Number Input -->
-                <input type="password" id="faculty-number" name="faculty_number" placeholder="Faculty Number (00XXXXX000)" required>
-    
-                <!-- Login Button -->
-                <button type="submit" class="button" >Login <i class="fa-solid fa-person-walking fa-fade"></i> <i class="fa-solid fa-arrow-right-to-bracket fa-fade"></i></button>
+                <span id="enrollmentError" class="error-message">Invalid enrollment number.</span>
+                
+                <input type="text" id="faculty-number" name="faculty_number" placeholder="Faculty Number (00XXXXX000)" required>
+                <span id="facultyError" class="error-message">Incorrect faculty number.</span>
+
+                <button type="submit" class="button">Login <i class="fa-solid fa-person-walking fa-fade"></i> <i class="fa-solid fa-arrow-right-to-bracket fa-fade"></i></button>
             </form>
         </div>
-        
         <footer style="position: absolute; bottom: 0;">
             <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
         </footer>
     </div>
-
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById("studentLoginForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            // Clear previous error messages
+            document.getElementById("enrollmentError").style.display = "none";
+            document.getElementById("facultyError").style.display = "none";
+
+            // Get form data
+            const loginData = {
+                enrollment_number: document.getElementById("enrollment-number").value,
+                faculty_number: document.getElementById("faculty-number").value,
+            };
+
+            // Send data to backend using fetch API
+            try {
+                const response = await fetch("/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(loginData),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    if (result.message === "Invalid enrollment number.") {
+                        document.getElementById("enrollmentError").style.display = "block";
+                        document.getElementById("enrollmentError").textContent = result.message;
+                    } else if (result.message === "Incorrect faculty number.") {
+                        document.getElementById("facultyError").style.display = "block";
+                        document.getElementById("facultyError").textContent = result.message;
+                    }
+                } else {
+                    window.location.href = "../student/studentDashboard.html";
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+    </script>
 </body>
 </html>
