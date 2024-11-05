@@ -12,7 +12,7 @@ router.post('/register', async (req, res) => {
     
     try {
         // Check if email already exists
-        const existingTeacher = await Teacher.findOne({ email });
+        const existingTeacher = await Teacher.findOne({ email : email.toLowerCase() });
         // Basic validation
         if (existingTeacher) {
             return res.status(400).send({ message: "Email is already registered." });
@@ -30,7 +30,7 @@ router.post('/register', async (req, res) => {
         // Create new teacher document
         const newTeacher = new Teacher({
             name,
-            email,
+            email : email.toLowerCase(),
             department,
             password: hashedPassword
         });
@@ -51,7 +51,7 @@ router.post('/teacherLogin', async (req, res) => {
     const { email, password } = req.body;
     try {
         // Check if email already exists
-        const existingTeacher = await Teacher.findOne({ email });
+        const existingTeacher = await Teacher.findOne({ email : email.toLowerCase() });
 
         if (!existingTeacher) {
             return res.status(400).send({ message: "Email is not registered. Please do signup." });
@@ -64,7 +64,10 @@ router.post('/teacherLogin', async (req, res) => {
             return res.status(400).send({ message: "Incorrect password." });
         } else {
             // Redirect or send success message
-            res.status(200).send({ message: "Teacher logged in successfully!" });
+            res.status(200).send({ 
+                message: "Teacher logged in successfully!",
+                teacherName: existingTeacher.name
+            });
         }
     } catch (error) {
         console.error(error);
@@ -87,7 +90,7 @@ router.post('/forgotPassword', async (req, res) => {
         const { email } = req.body;
 
         // Check if the email is registered
-        const teacher = await Teacher.findOne({ email });
+        const teacher = await Teacher.findOne({ email : email.toLowerCase() });
         if (!teacher) {
             return res.status(404).json({ message: 'Email is not registered. Please do signup.' });
         }
