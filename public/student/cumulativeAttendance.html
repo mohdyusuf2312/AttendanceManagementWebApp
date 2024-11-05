@@ -10,7 +10,7 @@
 <body>
     <div class="Dashboard-container">
         <!-- Navigation Bar -->
-        <nav class="navbar">
+        <nav class="navbar" style="position: absolute;">
             <div class="navbar-container">
                 <a href="./studentDashboard.html"><img src="../assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
                 <div class="dropdown">
@@ -61,6 +61,15 @@
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
 
     <script>
+        // Fetch the student name from localStorage and display it in the navbar
+        document.addEventListener("DOMContentLoaded", () => {
+            const studentName = localStorage.getItem("studentName") || "Student Name"; // Fallback in case name is not available
+            document.querySelector(".dropbtn").innerHTML = `
+                <img id="student-image" src="../assets/user'sPic.jpeg" alt="Student Image" class="student-image"> 
+                ${studentName} &#9662;
+            `;
+        });
+
         // Fetch student attendance data from API and populate the table
         function fetchAttendanceData() {
             fetch('http://localhost:3000/api/cumulative-attendance')
