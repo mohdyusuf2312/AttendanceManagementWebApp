@@ -35,10 +35,10 @@ app.use('/', teacherRoutes);
 
 // Endpoint to fetch cumulative attendance
 app.get('/api/attendance', async (req, res) => {
-    const enrollmentNumber = '123456'; // Replace with dynamic data from authenticated user
+    const enrollmentNumber = req.query.enrollment_number;
 
     try {
-        const student = await Student.findOne({ enrollment_number: enrollmentNumber });
+        const student = await Student.findOne({ enrollment_number: enrollmentNumber.toUpperCase() });
         if (student) {
             res.json({ cumulative_attendance_percentage: student.cumulative_attendance_percentage });
         } else {
@@ -50,29 +50,12 @@ app.get('/api/attendance', async (req, res) => {
     }
 });
 
-// Endpoint to fetch student image
-app.get('/api/student-image', async (req, res) => {
-    const enrollmentNumber = '123456'; // Replace with dynamic data from authenticated user
-
-    try {
-        const student = await Student.findOne({ enrollment_number: enrollmentNumber });
-        if (student) {
-            res.json({ image_url: student.image_url });
-        } else {
-            res.json({ image_url: "/AttendanceManagementWebApp/public/assets/user'sPic.jpeg" });
-        }
-    } catch (err) {
-        console.error('Error fetching student image:', err);
-        res.status(500).json({ error: 'Failed to fetch student image' });
-    }
-});
-
 // Endpoint to fetch student profile
 app.get('/api/student-profile', async (req, res) => {
-    const enrollmentNumber = '123456'; // Replace with dynamic data from authenticated user
+    const enrollmentNumber = req.query.enrollment_number;
 
     try {
-        const student = await Student.findOne({ enrollment_number: enrollmentNumber });
+        const student = await Student.findOne({ enrollment_number: enrollmentNumber.toUpperCase() });
         if (student) {
             res.json({
                 enrollment_number: student.enrollment_number,
