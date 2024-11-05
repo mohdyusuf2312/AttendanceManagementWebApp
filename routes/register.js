@@ -6,20 +6,19 @@ const router = express.Router();
 // POST /register - Teacher registration
 router.post('/register', async (req, res) => {
     const { name, email, department, password, confirmPassword } = req.body;
-
-    // Basic validation
-    if (password.length < 6) {
-        return res.status(400).send({ message: "Password must be at least 6 characters long." });
-    }
-    if (password !== confirmPassword) {
-        return res.status(400).send({ message: "Passwords do not match." });
-    }
-
+    
     try {
         // Check if email already exists
         const existingTeacher = await Teacher.findOne({ email });
+        // Basic validation
         if (existingTeacher) {
             return res.status(400).send({ message: "Email is already registered." });
+        }
+        if (password.length < 6) {
+            return res.status(400).send({ message: "Password must be at least 6 characters long." });
+        }
+        if (password !== confirmPassword) {
+            return res.status(400).send({ message: "Passwords do not match." });
         }
 
         // Hash password
