@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const ejs = require("ejs");
 const path = require("path");
-// const userRoutes = require('./routes/users');
+const studentRoutes = require('./routes/studentRouter');
 const teacherRoutes = require('./routes/teacherRouter');
 
 const app = express();
@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
     console.error('MongoDB connection failed:', err);
 });
 
-// app.use('/', userRoutes);
+app.use('/', studentRoutes);
 app.use('/', teacherRoutes);
 
 // Endpoint to fetch cumulative attendance
