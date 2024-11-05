@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Subject = require('../models/Subject');
-const User = require('../models/User');
 
 // Fetch subjects for a student
 router.get('/subjects', async (req, res) => {

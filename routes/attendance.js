@@ -1,20 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const Attendance = require('../models/Attendance');
-const User = require('../models/User');
+const Student = require('../models/Student');
 
 // Mark attendance (for teacher)
 router.post('/mark', async (req, res) => {
-    const { enrollment_number, status, course } = req.body;
+    const { enrollment_number, status, subject } = req.body;
 
     try {
-        const student = await User.findOne({ enrollment_number });
+        const student = await Student.findOne({ enrollment_number : enrollment_number.toUpperCase() });
         if (!student) return res.status(404).json({ error: 'Student not found' });
 
         const attendance = new Attendance({
             studentId: student._id,
             status,
-            subject: course
+            subject: subject
         });
 
         await attendance.save();
