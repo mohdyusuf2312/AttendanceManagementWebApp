@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link CSS  -->
+    <link rel="stylesheet" href="../styles.css">
+
+    <!-- Link Favicon  -->
+    <link rel="shortcut icon" href="../assets/favicon.svg" type="image/x-icon">
+    
+    <title>Teacher Profile - AMU Attendance Portal</title>
+</head>
+<body>
+    <div class="Dashboard-container">
+        <!-- Navigation Bar -->
+        <nav class="navbar" style="position: absolute;">
+            <div class="navbar-container">
+                <a href="./teacherDashboard.html"><img src="../assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
+                <!-- Dropdown Menu with Student Image -->
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        <img id="teacher-image" src="../assets/user'sPic.jpeg" alt="Teacher Image" class="student-image"> 
+                        Teacher Name &#9662;
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
+                        <a href="./teacherLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- Container for Profile Card -->
+        <div class="profile-container">
+            <div class="profile-card">
+                <h2 class="profile-heading">Profile</h2>
+                <!-- Teacher Details -->
+                <div class="profile-details">
+                    <p><strong>Name:</strong> <span id="teacher-name">Loading...</span></p>
+                    <p><strong>Email:</strong> <span id="email">Loading...</span></p>
+                    <p><strong>Department:</strong> <span id="department">Loading...</span></p>
+                    <p><strong>Date of Birth:</strong> <span id="dob">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript to Fetch Student Data -->
+    <script src="../script/scripts.js"></script>
+    <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+    <script>
+        // Fetch the teacher name from localStorage and display it in the navbar
+        document.addEventListener("DOMContentLoaded", () => {
+            const teacherName = localStorage.getItem("teacherName") || "Teacher Name"; // Fallback in case name is not available
+            document.querySelector(".dropbtn").innerHTML = `
+                <img id="teacher-image" src="../assets/user'sPic.jpeg" alt="Teacher Image" class="student-image"> 
+                ${teacherName} &#9662;
+            `;
+        });
+    </script>
+</body>
+</html>
