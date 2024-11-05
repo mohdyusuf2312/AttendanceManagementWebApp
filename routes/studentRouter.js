@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
 const Student = require('../models/Student'); 
 
 // POST /login - Student Login
@@ -20,7 +19,10 @@ router.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(400).send({ message: "Incorrect faculty number." });
         } else {
-            res.status(200).send({ message: "Student logged in successfully!" });
+            res.status(200).send({
+                message: "Parent logged in successfully!",
+                studentName: `${existingStudent.first_name} ${existingStudent.last_name}`
+            });
         }
     } catch (error) {
         console.error(error);
