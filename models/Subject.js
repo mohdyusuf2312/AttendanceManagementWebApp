@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const SubjectSchema = new mongoose.Schema({
-    code: { type: String, required: true },
-    name: { type: String, required: true },
-    description: { type: String },
-    studentIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    sub_code: { type: String, required: true },
+    sub_name: { type: String, required: true },
+    course: { type: String, required: true }, // Course code or name, e.g., MCA
+    semester: { type: String, required: true } // Semester code or name, e.g., 1, 2, etc.
 });
 
 module.exports = mongoose.model('Subject', SubjectSchema);
