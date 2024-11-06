@@ -2,25 +2,49 @@ const express = require('express');
 const router = express.Router();
 const Attendance = require('../models/Attendance');
 const Student = require('../models/Student');
+const Subject = require('../models/Subject');
 
-// Mark attendance (for teacher)
-router.post('/mark', async (req, res) => {
-    const { enrollment_number, status, subject } = req.body;
-
+// In attendance.js route file
+router.get("/api/students", async (req, res) => {
+    const { course, semester } = req.query;
     try {
-        const student = await Student.findOne({ enrollment_number : enrollment_number.toUpperCase() });
-        if (!student) return res.status(404).json({ error: 'Student not found' });
+        // Fetch and sort students by faculty_number
+        const students = await Student.find({ course, semester: Number(semester) }).sort({ faculty_number: 1 });
+        res.json(students);
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while fetching students.' });
+    }
+});
 
-        const attendance = new Attendance({
-            studentId: student._id,
-            status,
-            subject: subject
-        });
+router.get("/api/subjects", async (req, res) => {
+    const { course, semester } = req.query;
+    try {
+        const subjects = await Subject.find({ course, semester });  // Use find instead of findOne
+        const subjectNames = subjects.map(subject => subject.sub_name);  // Extract subject names
+        res.json(subjectNames);
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while fetching subjects.' });
+    }
+});
 
-        await attendance.save();
-        res.json({ message: 'Attendance marked successfully', attendance });
+router.post("/api/attendance", async (req, res) => {
+    const { course, semester, subject, teacher_name, attendance } = req.body;
+    
+    try {
+        const attendanceRecords = attendance.map(item => ({
+            enrollment_number: item.enrollment_number,  // Ensure this is an ObjectId if referring to Student model
+            sub_name: subject,                           // This should match `Subject` schema in MongoDB
+            date: new Date(),                            // Current date for each attendance record
+            status: item.present ? 'present' : 'absent',
+            course,
+            semester,
+            teacher_name
+        }));
+
+        await Attendance.insertMany(attendanceRecords);
+        res.status(201).json({ message: "Attendance recorded successfully" });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(400).json({ message: "Error saving attendance", error: err });
     }
 });
 
