@@ -6,6 +6,7 @@ const ejs = require("ejs");
 const path = require("path");
 const studentRoutes = require('./routes/studentRouter');
 const teacherRoutes = require('./routes/teacherRouter');
+const attendanceRoutes = require('./routes/attendance');
 
 const app = express();
 const port = 3000;
@@ -32,6 +33,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
 
 app.use('/', studentRoutes);
 app.use('/', teacherRoutes);
+app.use('/', attendanceRoutes);
 
 // Endpoint to fetch cumulative attendance
 app.get('/api/attendance', async (req, res) => {
