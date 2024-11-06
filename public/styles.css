@@ -364,6 +364,14 @@ footer p a:hover {
 
 /* Dynamic */
 /* Student item styling for list */
+.student-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    padding: 10px;
+    border-bottom: 2px solid #ccc;
+}
+
 .student-item {
     display: flex;
     justify-content: space-between;
@@ -375,12 +383,17 @@ footer p a:hover {
 
 /* Enrollment number and student name take up the main space */
 .student-enrollment {
-    width: 120px; /* Fixed width for enrollment number */
-    text-align: left;
+    width: 20%; /* Fixed width for enrollment number */
+    text-align: center;
+}
+
+.student-faculty {
+    width: 20%; /*Fixed width for enrollment number */
+    text-align: center;
 }
 
 .student-name {
-    width: 160px;
+    width: 20%;
 }
 
 /* Toggle container for fixed width to ensure alignment */
@@ -398,8 +411,8 @@ footer p a:hover {
 .attendance-toggle {
     position: relative;
     display: inline-block;
-    width: 50px;
-    height: 26px;
+    width: 34px;
+    height: 20px;
 }
 
 .attendance-toggle input {
@@ -423,11 +436,11 @@ footer p a:hover {
 .slider:before {
     position: absolute;
     content: "";
-    height: 20px;
-    width: 20px;
+    height: 12px;
+    width: 12px;
     border-radius: 50%;
     left: 4px;
-    bottom: 3px;
+    bottom: 4px;
     background-color: white;
     transition: .4s;
 }
@@ -437,7 +450,7 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-    transform: translateX(24px);
+    transform: translateX(14px);
 }
 
 /* Styling for form */
