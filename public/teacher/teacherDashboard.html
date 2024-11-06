@@ -3,21 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link CSS  -->
     <link rel="stylesheet" href="../styles.css">
-
-    <!-- Link Favicon  -->
     <link rel="shortcut icon" href="../assets/favicon.svg" type="image/x-icon">
-    
     <title>Teacher Dashboard - AMU Attendance Portal</title>
 </head>
 <body>
     <div class="Dashboard-container">
-        <!-- Navigation Bar -->
-        <nav class="navbar">
+        <nav class="navbar" style="position: absolute;">
             <div class="navbar-container">
-                <a href="./teacherDashboard.html"><img src="../assets/logoWithName.png" alt="AMU Logo with name" class="logo"></a>
-                <!-- Dropdown Menu -->
+                <a href="./teacherDashboard.html"><img src="../assets/logoWithName.png" alt="AMU Logo" class="logo"></a>
                 <div class="dropdown">
                     <button class="dropbtn">
                         <img id="teacher-image" src="../assets/user'sPic.jpeg" alt="Teacher Image" class="student-image"> 
@@ -25,7 +19,7 @@
                     </button>
                     <div class="dropdown-content">
                         <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
-                        <a href="./teacherLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                        <a href="./teacherLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> Logout</a>
                     </div>
                 </div>
             </div>
@@ -49,18 +43,36 @@
             </div>
         </section>
 
-        <!-- Course Batch List Section -->
+        <!-- Attendance Form Section -->
         <section class="cards-section">
-            <div class="card">
-                <h3>Select Batch</h3>
-                <p><a href="./courseList.html?course=MCA_1st_Year">MCA (1st Year)</a></p>
-                <p><a href="./courseList.html?course=MCA_2nd_Year">MCA (2nd Year)</a></p>
-                <p><a href="./courseList.html?course=MSc_Cyber_1st_Year">M.Sc Cyber (1st Year)</a></p>
-                <p><a href="./courseList.html?course=MSc_Cyber_2nd_Year">M.Sc Cyber (2nd Year)</a></p>
-                <p><a href="./courseList.html?course=BSc_1st_Year">B.Sc (1st Year)</a></p>
-                <p><a href="./courseList.html?course=BSc_2nd_Year">B.Sc (2nd Year)</a></p>
-                <p><a href="./courseList.html?course=BSc_3rd_Year">B.Sc (3rd Year)</a></p>
-                <p><a href="./courseList.html?course=BSc_4rd_Year">B.Sc (4th Year)</a></p>
+            <div class="card" style="width: 75%;">
+                <h3>Select Course, Semester, and Subject</h3>
+                <form id="attendance-form">
+                    <label for="course">Course:</label>
+                    <select id="course" required onchange="loadSemesters()">
+                        <option value="">Select a course</option>
+                        <option value="MCA">MCA</option>
+                        <option value="MSc_Cyber">M.Sc Cyber</option>
+                        <option value="BSc">B.Sc</option>
+                    </select>
+
+                    <label for="semester">Semester:</label>
+                    <select id="semester" required onchange="loadSubjects(), loadStudents()">
+                        <option value="">Select a semester</option>
+                    </select>
+
+                    <label for="subject">Subject:</label>
+                    <select id="subject" required >
+                        <option value="">Select a subject</option>
+                    </select>
+                </form>
+            </div>
+
+            <!-- Student List Section -->
+            <div class="student-list-container" id="student-list-container" style="display:none; width: 70%;">
+                <h3>Mark Attendance</h3>
+                <div id="student-list"></div>
+                <button class="button" style="font-size: medium;" onclick="submitAttendance()">Submit Attendance</button>
             </div>
         </section>
 
@@ -72,14 +84,128 @@
     <script src="../script/slideshow.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
     <script>
-        // Fetch the teacher name from localStorage and display it in the navbar
         document.addEventListener("DOMContentLoaded", () => {
-            const teacherName = localStorage.getItem("teacherName") || "Teacher Name"; // Fallback in case name is not available
+            const teacherName = localStorage.getItem("teacherName") || "Teacher Name"; 
             document.querySelector(".dropbtn").innerHTML = `
                 <img id="teacher-image" src="../assets/user'sPic.jpeg" alt="Teacher Image" class="student-image"> 
                 ${teacherName} &#9662;
             `;
         });
+
+        function loadSemesters() {
+            const course = document.getElementById("course").value;
+            const semesterDropdown = document.getElementById("semester");
+            semesterDropdown.innerHTML = '<option value="">Select a semester</option>';
+
+            let semesters = 4;
+            if (course === "BSc") semesters = 8;
+
+            for (let i = 1; i <= semesters; i++) {
+                semesterDropdown.innerHTML += `<option value="${i}">Semester ${i}</option>`;
+            }
+        }
+
+        async function loadSubjects() {
+            const course = document.getElementById("course").value;
+            const semester = document.getElementById("semester").value;
+            const subjectDropdown = document.getElementById("subject");
+
+            if (!course || !semester) return;  // Ensure both course and semester are selected
+
+            try {
+                const response = await fetch(`/api/subjects?course=${course}&semester=${semester}`);
+                const subjects = await response.json();
+
+                subjectDropdown.innerHTML = '<option value="">Select a subject</option>';
+                subjects.forEach(subject => {
+                    subjectDropdown.innerHTML += `<option value="${subject}">${subject}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading subjects:', error);
+            }
+        }
+
+        async function loadStudents() {
+            const course = document.getElementById("course").value;
+            const semester = document.getElementById("semester").value;
+
+            const response = await fetch(`/api/students?course=${course}&semester=${semester}`);
+            const students = await response.json();
+
+            // Sort students by faculty_number
+            students.sort((a, b) => a.faculty_number.localeCompare(b.faculty_number));
+
+            const studentListContainer = document.getElementById("student-list");
+            studentListContainer.innerHTML = '';
+
+            // Add header row
+            const headerRow = document.createElement("div");
+            headerRow.className = "student-header";
+            headerRow.innerHTML = `
+                <strong>Enrollment Number</strong>
+                <strong>Faculty Number</strong>
+                <strong>Name</strong>
+                <strong>Status</strong>
+            `;
+            studentListContainer.appendChild(headerRow);
+
+            // Add student rows
+            students.forEach(student => {
+                const studentItem = document.createElement("div");
+                studentItem.className = "student-item";
+                studentItem.innerHTML = `
+                    <p class="student-enrollment">${student.enrollment_number}</p>
+                    <p class="student-faculty">${student.faculty_number}</p>
+                    <p class="student-name">${student.first_name + " " + student.last_name}</p>
+                    <div class="attendance-container">
+                        <label class="attendance-toggle">
+                            <input type="checkbox" class="attendance-checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                `;
+                studentListContainer.appendChild(studentItem);
+            });
+
+            document.getElementById("student-list-container").style.display = "block";
+        }
+
+        async function submitAttendance() {
+            const course = document.getElementById("course").value;
+            const semester = document.getElementById("semester").value;
+            const subject = document.getElementById("subject").value;
+
+            // Check if subject is selected
+            if (!subject) {
+                alert("Please select a subject");
+                return; // Stop further execution if subject is not selected
+            }
+
+            // Get teacher name from local storage
+            const teacherName = localStorage.getItem("teacherName") || "${subject}";
+
+            const studentItems = document.querySelectorAll(".student-item");
+            const attendanceData = Array.from(studentItems).map(item => ({
+                enrollment_number: item.querySelector(".student-enrollment").innerText,
+                present: item.querySelector(".attendance-checkbox").checked
+            }));
+
+            const response = await fetch("/api/attendance", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ course, semester, subject, teacher_name: teacherName, attendance: attendanceData })
+            });
+
+            if (response.ok) {
+                alert("Attendance successfully submitted.");
+
+                // Reset the form and hide the student list container
+                document.getElementById("attendance-form").reset();
+                document.getElementById("student-list-container").style.display = "none";
+            } else {
+                alert("Failed to submit attendance.");
+            }
+        }
     </script>
 </body>
 </html>
