@@ -5,6 +5,7 @@ const router = express.Router();
 const crypto = require('crypto'); // For generating token
 const nodemailer = require('nodemailer'); // For sending emails
 const path = require('path');
+const jwt = require('jsonwebtoken');
 
 // POST /register - Teacher registration
 router.post('/register', async (req, res) => {
@@ -63,6 +64,9 @@ router.post('/teacherLogin', async (req, res) => {
         if (!isMatch) {
             return res.status(400).send({ message: "Incorrect password." });
         } else {
+            let teacherToken  = jwt.sign({ email: existingTeacher.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            res.cookie('teacherToken', teacherToken, { httpOnly: true, maxAge: 3600000 }); // 1 hour expiry
+            
             // Redirect or send success message
             res.status(200).send({ 
                 message: "Teacher logged in successfully!",
@@ -175,6 +179,34 @@ router.post('/resetPassword/:token', async (req, res) => {
     } catch (error) {
         console.error("Error resetting password:", error);
         res.status(500).json({ message: "Could not reset password. Please try again." });
+    }
+});
+
+router.get('/teacherProfile', async (req, res) => {
+    try {
+        // Verify and decode JWT token from cookies
+        const token = req.cookies.teacherToken;
+        if (!token) {
+            return res.status(401).send({ message: "Unauthorized. Please log in." });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const email = decoded.email;
+        // Fetch teacher data from database
+        const teacher = await Teacher.findOne({ email });
+        if (!teacher) {
+            return res.status(404).send({ message: "Teacher not found." });
+        }
+
+        // Send back relevant profile data
+        res.status(200).send({
+            name: teacher.name,
+            email: teacher.email,
+            department: teacher.department,
+        });
+    } catch (error) {
+        console.error("Error fetching profile:", error);
+        res.status(500).send({ message: "Server error. Please try again later." });
     }
 });
 
