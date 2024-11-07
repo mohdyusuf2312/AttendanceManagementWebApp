@@ -7,13 +7,14 @@ const path = require("path");
 const studentRoutes = require('./routes/studentRouter');
 const teacherRoutes = require('./routes/teacherRouter');
 const attendanceRoutes = require('./routes/attendance');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const port = 3000;
 
 // Enable CORS
 app.use(cors());
-
+app.use(cookieParser());
 // Enable parsing of JSON and URL-encoded form data for POST requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
