@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Student = require('../models/Student'); 
+const Subject = require('../models/Subject');
 
 // POST /login - Student Login
 router.post('/login', async (req, res) => {
@@ -27,6 +28,31 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send({ message: "Server error. Please try again later." });
+    }
+});
+
+router.get('/api/selectsubjects', async (req, res) => {
+    const enrollment_number = req.query.enrollment_number;
+    if (!enrollment_number) {
+        return res.status(400).json({ error: 'Enrollment number is required' });
+    }
+
+    try {
+        const student = await Student.findOne({ enrollment_number });
+        if (!student) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+        const { course, semester } = student;
+
+        const subjects = await Subject.find({ course, semester });
+        const formattedSubjects = subjects.map(subject => ({
+            sub_name: subject.sub_name
+        }));
+        res.json(formattedSubjects);
+
+    } catch (err) {
+        console.error('Error fetching subjects:', err);
+        res.status(500).json({ error: 'Failed to fetch subjects' });
     }
 });
 
