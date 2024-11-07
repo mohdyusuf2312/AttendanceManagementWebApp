@@ -36,13 +36,11 @@
                 <h2 class="profile-heading">Profile</h2>
                 <!-- Student Details -->
                 <div class="profile-details">
-                    <p><strong>Enrollment Number:</strong> <span id="enrollment-number">Loading...</span></p>
                     <p><strong>Student Name:</strong> <span id="student-name">Loading...</span></p>
-                    <p><strong>Father Name:</strong> <span id="father-name">Loading...</span></p>
-                    <p><strong>Department:</strong> <span id="department">Loading...</span></p>
+                    <p><strong>Enrollment Number:</strong> <span id="enrollment-number">Loading...</span></p>
+                    <p><strong>Faculty Number:</strong> <span id="faculty-number">Loading...</span></p>
                     <p><strong>Course:</strong> <span id="course">Loading...</span></p>
                     <p><strong>Semester:</strong> <span id="semester">Loading...</span></p>
-                    <p><strong>Date of Birth:</strong> <span id="dob">Loading...</span></p>
                 </div>
             </div>
         </div>
@@ -56,13 +54,36 @@
     <script src="../script/scripts.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
     <script>
-        // Fetch the student name from localStorage and display it in the navbar
-        document.addEventListener("DOMContentLoaded", () => {
-            const studentName = localStorage.getItem("studentName") || "Student Name"; // Fallback in case name is not available
-            document.querySelector(".dropbtn").innerHTML = `
-                <img id="student-image" src="../assets/user'sPic.jpeg" alt="Student Image" class="student-image"> 
-                ${studentName} &#9662;
-            `;
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("/api/student-profile", {
+                    method: "GET",
+                    credentials: "same-origin", // Ensures cookies are included in the request
+                    headers: { "Content-Type": "application/json" }
+                });
+    
+                if (!response.ok) {
+                    throw new Error("Failed to fetch student profile");
+                }
+    
+                const data = await response.json();
+    
+                // Populate profile details with data from the server
+                document.getElementById("student-name").textContent = data.name;
+                document.getElementById("enrollment-number").textContent = data.enrollment_number;
+                document.getElementById("faculty-number").textContent = data.faculty_number;
+                document.getElementById("course").textContent = data.course;
+                document.getElementById("semester").textContent = data.semester;
+    
+                // Update the teacher name in the navbar dropdown
+                document.querySelector(".dropbtn").innerHTML = `
+                    <img id="student-image" src="../assets/user'sPic.jpeg" alt="Student Image" class="student-image"> 
+                    ${data.name} &#9662;
+                `;
+            } catch (error) {
+                console.error("Error fetching profile data:", error);
+                alert("Could not load profile information. Please try again.");
+            }
         });
     </script>
 </body>

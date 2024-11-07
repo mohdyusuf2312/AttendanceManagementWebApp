@@ -68,9 +68,6 @@
                         document.getElementById("facultyError").textContent = result.message;
                     }
                 } else {
-                    // Store studentName in localStorage
-                    localStorage.setItem("studentName", result.studentName);
-                    localStorage.setItem("enrollment_number", loginData.enrollment_number);
                     // Redirect to student dashboard
                     window.location.href = "../student/studentDashboard.html";
                 }

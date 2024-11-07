@@ -91,9 +91,16 @@
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
     <script src="../script/slideshow.js"></script>
     <script>
-        // Fetch the student name from localStorage and display it in the navbar
-        document.addEventListener("DOMContentLoaded", () => {
-            const studentName = localStorage.getItem("studentName") || "Student Name"; // Fallback in case name is not available
+        // Fetch the student name from database and display it in the navbar
+        document.addEventListener("DOMContentLoaded", async () => {
+            const response = await fetch("/api/student-profile", {
+                    method: "GET",
+                    credentials: "same-origin", // Ensures cookies are included in the request
+                    headers: { "Content-Type": "application/json" }
+                });
+                student = await response.json();
+                studentName = student.name;
+
             document.querySelector(".dropbtn").innerHTML = `
                 <img id="student-image" src="../assets/user'sPic.jpeg" alt="Student Image" class="student-image"> 
                 ${studentName} &#9662;
