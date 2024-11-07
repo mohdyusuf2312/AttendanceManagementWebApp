@@ -53,31 +53,6 @@ app.get('/api/attendance', async (req, res) => {
     }
 });
 
-// Endpoint to fetch student profile
-app.get('/api/student-profile', async (req, res) => {
-    const enrollmentNumber = req.query.enrollment_number;
-
-    try {
-        const student = await Student.findOne({ enrollment_number: enrollmentNumber.toUpperCase() });
-        if (student) {
-            res.json({
-                enrollment_number: student.enrollment_number,
-                student_name: student.student_name,
-                father_name: student.father_name,
-                department: student.department,
-                course: student.course,
-                semester: student.semester,
-                dob: student.dob
-            });
-        } else {
-            res.status(404).json({ error: 'Student not found' });
-        }
-    } catch (err) {
-        console.error('Error fetching student profile:', err);
-        res.status(500).json({ error: 'Failed to fetch student profile' });
-    }
-});
-
 app.get("/admin", (req, res) => {
     res.render("admin");
 });
