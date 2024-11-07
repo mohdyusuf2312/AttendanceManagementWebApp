@@ -52,16 +52,6 @@
     <script src="../script/scripts.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
     <script>
-        // Fetch the teacher name from localStorage and display it in the navbar
-        document.addEventListener("DOMContentLoaded", () => {
-            const teacherName = localStorage.getItem("teacherName") || "Teacher Name"; // Fallback in case name is not available
-            document.querySelector(".dropbtn").innerHTML = `
-                <img id="teacher-image" src="../assets/user'sPic.jpeg" alt="Teacher Image" class="student-image"> 
-                ${teacherName} &#9662;
-            `;
-        });
-    </script>
-    <script>
         document.addEventListener("DOMContentLoaded", async () => {
             try {
                 const response = await fetch("/teacherProfile", {

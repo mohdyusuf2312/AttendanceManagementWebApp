@@ -84,8 +84,15 @@
     <script src="../script/slideshow.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const teacherName = localStorage.getItem("teacherName") || "Teacher Name"; 
+        document.addEventListener("DOMContentLoaded", async () => {
+            const response = await fetch("/teacherProfile", {
+                    method: "GET",
+                    credentials: "same-origin", // Ensures cookies are included in the request
+                    headers: { "Content-Type": "application/json" }
+                });
+                teacher = await response.json();
+                teacherName = teacher.name;
+
             document.querySelector(".dropbtn").innerHTML = `
                 <img id="teacher-image" src="../assets/user'sPic.jpeg" alt="Teacher Image" class="student-image"> 
                 ${teacherName} &#9662;
@@ -180,9 +187,6 @@
                 alert("Please select a subject");
                 return; // Stop further execution if subject is not selected
             }
-
-            // Get teacher name from local storage
-            const teacherName = localStorage.getItem("teacherName") || "${subject}";
 
             const studentItems = document.querySelectorAll(".student-item");
             const attendanceData = Array.from(studentItems).map(item => ({
