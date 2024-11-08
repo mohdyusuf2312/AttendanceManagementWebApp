@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const ejs = require("ejs");
 const path = require("path");
 const studentRoutes = require('./routes/studentRouter');
 const teacherRoutes = require('./routes/teacherRouter');
@@ -15,12 +14,10 @@ const port = 3000;
 // Enable CORS
 app.use(cors());
 app.use(cookieParser());
+
 // Enable parsing of JSON and URL-encoded form data for POST requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Set view engine to EJS for rendering dynamic pages
-app.set("view engine", "ejs");
 
 // Serve static files (e.g., CSS, JS, images) from the "public" folder
 app.use(express.static(path.join(__dirname, "public")));
@@ -51,10 +48,6 @@ app.get('/api/attendance', async (req, res) => {
         console.error('Error fetching data:', err);
         res.status(500).json({ error: 'Failed to fetch data' });
     }
-});
-
-app.get("/admin", (req, res) => {
-    res.render("admin");
 });
 
 // Start the server
