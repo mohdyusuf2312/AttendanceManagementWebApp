@@ -25,7 +25,7 @@
                     </button>
                     <div class="dropdown-content">
                         <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
-                        <a href="./teacherLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                        <a href="#" onclick="logoutTeacher()"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
                     </div>
                 </div>
             </div>
@@ -52,6 +52,29 @@
     <script src="../script/scripts.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
     <script>
+        // Logout function
+        async function logoutTeacher() {
+            try {
+                const response = await fetch("/teacherLogout", {
+                    method: "POST",
+                    // credentials: "same-origin", // Ensures cookies are included
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (response.ok) {
+                    // Redirect to the login page after successful logout
+                    window.location.href = "./teacherLogin.html";
+                } else {
+                    console.error("Failed to logout.");
+                    alert("Logout failed. Please try again.");
+                }
+            } catch (error) {
+                console.error("Error during logout:", error);
+                alert("An error occurred during logout.");
+            }
+        }
+
+        // Fetch teacher profile data when the page loads
         document.addEventListener("DOMContentLoaded", async () => {
             try {
                 const response = await fetch("/teacherProfile", {
