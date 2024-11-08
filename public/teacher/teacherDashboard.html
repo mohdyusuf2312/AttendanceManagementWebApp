@@ -43,10 +43,37 @@
             </div>
         </section>
 
-        <!-- Attendance Form Section -->
         <section class="cards-section">
+            <!-- Detained Student Report -->
             <div class="card" style="width: 75%;">
-                <h3>Select Course, Semester, and Subject</h3>
+                <h3>Detained Student</h3>
+                <form id="detained-form">
+                    <label for="course">Course:</label>
+                    <select id="d_course" required onchange="d_loadSemesters()">
+                        <option value="">Select a course</option>
+                        <option value="MCA">MCA</option>
+                        <option value="MSc_Cyber">M.Sc Cyber</option>
+                        <option value="BSc">B.Sc</option>
+                    </select>
+
+                    <label for="semester">Semester:</label>
+                    <select id="d_semester" required onchange="d_loadSubjects()">
+                        <option value="">Select a semester</option>
+                    </select>
+
+                    <label for="subject">Subject:</label>
+                    <select id="d_subject" required>
+                        <option value="">Select a subject</option>
+                    </select>
+                </form>
+                <div>
+                    <button class="button" style="font-size: medium;" onclick="generateReport()">Generate Report</button>
+                </div>
+            </div>
+
+            <!-- Attendance Form -->
+            <div class="card" style="width: 75%;">
+                <h3>Mark Attendance</h3>
                 <form id="attendance-form">
                     <label for="course">Course:</label>
                     <select id="course" required onchange="loadSemesters()">
@@ -70,7 +97,6 @@
 
             <!-- Student List Section -->
             <div class="student-list-container" id="student-list-container" style="display:none; width: 70%;">
-                <h3>Mark Attendance</h3>
                 <div id="student-list"></div>
                 <button class="button" style="font-size: medium;" onclick="submitAttendance()">Submit Attendance</button>
             </div>
@@ -83,6 +109,7 @@
 
     <script src="../script/slideshow.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         // Logout function
         async function logoutTeacher() {
@@ -134,11 +161,44 @@
                 semesterDropdown.innerHTML += `<option value="${i}">Semester ${i}</option>`;
             }
         }
+        
+        function d_loadSemesters() {
+            const course = document.getElementById("d_course").value;
+            const semesterDropdown = document.getElementById("d_semester");
+            semesterDropdown.innerHTML = '<option value="">Select a semester</option>';
+
+            let semesters = 4;
+            if (course === "BSc") semesters = 8;
+
+            for (let i = 1; i <= semesters; i++) {
+                semesterDropdown.innerHTML += `<option value="${i}">Semester ${i}</option>`;
+            }
+        }
 
         async function loadSubjects() {
             const course = document.getElementById("course").value;
             const semester = document.getElementById("semester").value;
             const subjectDropdown = document.getElementById("subject");
+
+            if (!course || !semester) return;  // Ensure both course and semester are selected
+
+            try {
+                const response = await fetch(`/api/subjects?course=${course}&semester=${semester}`);
+                const subjects = await response.json();
+
+                subjectDropdown.innerHTML = '<option value="">Select a subject</option>';
+                subjects.forEach(subject => {
+                    subjectDropdown.innerHTML += `<option value="${subject}">${subject}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading subjects:', error);
+            }
+        }
+
+        async function d_loadSubjects() {
+            const course = document.getElementById("d_course").value;
+            const semester = document.getElementById("d_semester").value;
+            const subjectDropdown = document.getElementById("d_subject");
 
             if (!course || !semester) return;  // Ensure both course and semester are selected
 
@@ -231,6 +291,90 @@
                 document.getElementById("student-list-container").style.display = "none";
             } else {
                 alert("Failed to submit attendance.");
+            }
+        }
+
+        async function generateReport() {
+            const course = document.getElementById("d_course").value;
+            const semester = document.getElementById("d_semester").value;
+            const subject = document.getElementById("d_subject").value;
+
+            if (!course || !semester || !subject) {
+                alert("Please select course, semester, and subject.");
+                return;
+            }
+
+            try {
+                const [ studentRes, teacherRes] = await Promise.all([
+                    fetch(`/api/attendanceReport?course=${course}&semester=${semester}&subject=${subject}`),
+                    fetch(`/teacherProfile`)
+                ]);
+                
+                if (!studentRes.ok || !teacherRes.ok) {
+                    throw new Error("Error fetching data");
+                }
+                
+                // Backend provides the list of detained students directly
+                const detainedStudents = await studentRes.json();
+                const teacher = await teacherRes.json();
+                const teacherDepartment = teacher.department;
+                console.log(detainedStudents);
+                console.log(teacherDepartment);
+
+                // Generate the PDF with jsPDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                // PDF Filename
+                const fileName = `DetainedStudent_${subject}.pdf`;
+
+                // Styling and Content
+                const pageWidth = doc.internal.pageSize.getWidth();
+                
+                // Heading
+                doc.setFontSize(16);
+                doc.text("Aligarh Muslim University", pageWidth / 2, 20, { align: "center" });
+                
+                // Subheading: Department
+                doc.setFontSize(12);
+                doc.text(`${teacherDepartment} Department`, pageWidth / 2, 30, { align: "center" });
+                
+                // Course, Semester, and Subject Information
+                doc.setFontSize(10);
+                doc.text(`Course: ${course} | Semester: ${semester} | Subject: ${subject}`, pageWidth / 2, 40, { align: "center" });
+                
+                // List Heading
+                doc.setFontSize(14);
+                doc.text("List of Detained Students", pageWidth / 2, 50, { align: "center" });
+                
+                // Table Headers
+                const startX = 10;
+                let yPosition = 60;
+                
+                doc.setFontSize(10);
+                doc.text("Sr. No.", startX, yPosition);
+                doc.text("Enrollment No.", startX + 20, yPosition);
+                doc.text("Name", startX + 60, yPosition);
+                doc.text("Attendance (%)", startX + 130, yPosition);
+
+                // Draw a line below headers
+                yPosition += 5;
+                doc.line(10, yPosition, pageWidth - 10, yPosition);
+                console.log(detainedStudents);
+                // Table Rows
+                detainedStudents.forEach((student, index) => {
+                    yPosition += 10;
+                    doc.text(String(index + 1), startX, yPosition);
+                    doc.text(`${student.enrollment_number}`, startX + 20, yPosition);
+                    doc.text(`${student.name}`, startX + 60, yPosition);
+                    doc.text(`${student.attendancePercentage}%`, startX + 130, yPosition);
+                });
+
+                // Save the PDF
+                doc.save(fileName);
+            } catch (error) {
+                console.error("Error generating report:", error);
+                alert("Error generating report.");
             }
         }
     </script>
