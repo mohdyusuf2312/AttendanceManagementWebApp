@@ -3,6 +3,7 @@ const router = express.Router();
 const Attendance = require('../models/Attendance');
 const Student = require('../models/Student');
 const Subject = require('../models/Subject');
+const jwt = require('jsonwebtoken');
 
 // In attendance.js route file
 router.get("/api/students", async (req, res) => {
@@ -114,31 +115,58 @@ router.get('/api/attendanceReport', async (req, res) => {
 });
 
 // Fetch cumulative attendance (for student)
-router.get('/cumulative-attendance', async (req, res) => {
-    const studentId = req.user._id;
-
+router.get('/api/cumulative-attendance', async (req, res) => {
     try {
-        const attendanceData = await Attendance.aggregate([
-            { $match: { studentId } },
-            {
-                $group: {
-                    _id: '$subject',
-                    classesHeld: { $sum: 1 },
-                    present: { $sum: { $cond: [{ $eq: ['$status', 'present'] }, 1, 0] } }
-                }
+        // Verify and decode JWT token from cookies
+        const token = req.cookies.studentToken;
+        if (!token) {
+            return res.status(401).send({ message: "Unauthorized. Please log in." });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const enrollment_number = decoded.enrollment_number;
+
+        // Fetch student data from database
+        const student = await Student.findOne({ enrollment_number: enrollment_number.toUpperCase() });
+        if (!student) {
+            return res.status(404).send({ message: "Student not found." });
+        }
+
+        // Fetch attendance data as in previous response
+        const attendanceRecords = await Attendance.find({
+            enrollment_number: enrollment_number,
+            course: student.course,
+            semester: student.semester
+        });
+
+        // Calculate attendance summary...
+        const attendanceSummary = {};
+        attendanceRecords.forEach(record => {
+            if (!attendanceSummary[record.sub_name]) {
+                attendanceSummary[record.sub_name] = { classesHeld: 0, present: 0 };
             }
-        ]);
+            attendanceSummary[record.sub_name].classesHeld += 1;
+            if (record.status === 'present') {
+                attendanceSummary[record.sub_name].present += 1;
+            }
+        });
 
-        // Map to the format required by the frontend
-        const formattedData = attendanceData.map(item => ({
-            courseCode: item._id,
-            classesHeld: item.classesHeld,
-            present: item.present
-        }));
+        const attendanceData = Object.keys(attendanceSummary).map((subName, index) => {
+            const { classesHeld, present } = attendanceSummary[subName];
+            const percentage = ((present / classesHeld) * 100).toFixed(2);
+            return {
+                sNo: index + 1,
+                subName,
+                classesHeld,
+                present,
+                percentage
+            };
+        });
 
-        res.json(formattedData);
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch attendance' });
+        res.json({ attendanceData });
+    } catch (error) {
+        console.error("Error fetching attendance:", error);
+        res.status(500).json({ error: 'An error occurred' });
     }
 });
 
