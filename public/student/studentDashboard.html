@@ -25,7 +25,7 @@
                     </button>
                     <div class="dropdown-content">
                         <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
-                        <a href="./studentLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                        <a href="#" onclick="logoutStudent()"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
                     </div>
                 </div>
             </div>
@@ -91,6 +91,28 @@
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
     <script src="../script/slideshow.js"></script>
     <script>
+        // Logout function
+        async function logoutStudent() {
+            try {
+                const response = await fetch("/studentLogout", {
+                    method: "POST",
+                    // credentials: "same-origin", // Ensures cookies are included
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (response.ok) {
+                    // Redirect to the login page after successful logout
+                    window.location.href = "./studentLogin.html";
+                } else {
+                    console.error("Failed to logout.");
+                    alert("Logout failed. Please try again.");
+                }
+            } catch (error) {
+                console.error("Failed to logout.", error);
+                alert("Logout failed. Please try again.");
+            }
+        }
+        
         // Fetch the student name from database and display it in the navbar
         document.addEventListener("DOMContentLoaded", async () => {
             const response = await fetch("/api/student-profile", {

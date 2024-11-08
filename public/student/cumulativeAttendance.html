@@ -20,7 +20,7 @@
                     </button>
                     <div class="dropdown-content">
                         <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
-                        <a href="./studentLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                        <a href="#" onclick="logoutStudent()"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
                     </div>
                 </div>
             </div>
@@ -61,6 +61,26 @@
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
 
     <script>
+        // Logout function
+        async function logoutStudent() {
+            try {
+                const response = await fetch("/studentLogout", {
+                    method: "POST",
+                    // credentials: "same-origin", // Ensures cookies are included
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                if (response.ok) {
+                    window.location.href = "./studentLogin.html";
+                } else {
+                    console.error("Logout failed:", response.statusText);
+                }
+            } catch (error) {
+                console.error("Error during logout:", error);
+            }
+        }
+
         // Fetch the student name from localStorage and display it in the navbar
         document.addEventListener("DOMContentLoaded", () => {
             const studentName = localStorage.getItem("studentName") || "Student Name"; // Fallback in case name is not available
