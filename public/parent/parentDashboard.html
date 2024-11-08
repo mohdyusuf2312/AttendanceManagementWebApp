@@ -60,7 +60,7 @@
             <!-- Attendance Card  -->
             <div class="card">
                 <h3>Attendance</h3>
-                <p>Cumulative Attendance: <span id="attendance-percentage">Loading...</span>%<br>
+                <p>Cumulative Attendance: <span id="cumulative-percentage">Loading...</span>%<br>
                 <a href="./cumulativeAttendance.html"><i class="fa-solid fa-table fa-fade"></i> View cumulative attendance report</a></p>
             </div>
             <!-- Result Card -->
@@ -99,9 +99,16 @@
             }
         }
 
-        // Fetch the student name from localStorage and display it in the navbar
-        document.addEventListener("DOMContentLoaded", () => {
-            const studentName = localStorage.getItem("studentName") || "Student Name"; // Fallback in case name is not available
+        // Fetch the student name from database and display it in the navbar
+        document.addEventListener("DOMContentLoaded", async () => {
+            const response = await fetch("/api/student-profile", {
+                    method: "GET",
+                    credentials: "same-origin", // Ensures cookies are included in the request
+                    headers: { "Content-Type": "application/json" }
+                });
+                student = await response.json();
+                studentName = student.name;
+
             document.querySelector(".dropbtn").innerHTML = `
                 <img id="student-image" src="../assets/user'sPic.jpeg" alt="Student Image" class="student-image"> 
                 ${studentName} &#9662;
@@ -109,20 +116,33 @@
         });
         
         // Fetch attendance data using AJAX
-        function fetchAttendance() {
-            fetch('http://localhost:3000/api/attendance')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('attendance-percentage').textContent = data.cumulative_attendance_percentage;
-                })
-                .catch(error => {
-                    console.error('Error fetching attendance data:', error);
-                    document.getElementById('attendance-percentage').textContent = 'Error';
-                });
-        }
+        function fetchCumulativePercentage() {
+            fetch('/api/cumulative-attendance', {
+                method: 'GET',
+                credentials: 'same-origin', // Ensures cookies are included in the request
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let totalClassesHeld = 0;
+                let totalPresent = 0;
 
+                data.attendanceData.forEach((item) => {
+                    totalClassesHeld += item.classesHeld;
+                    totalPresent += item.present;
+                });
+
+                // Calculate and display cumulative percentage
+                const cumulativePercentage = ((totalPresent / totalClassesHeld) * 100).toFixed(2);
+                document.getElementById("cumulative-percentage").textContent = `${cumulativePercentage}`;
+            })
+            .catch(error => {
+                console.error('Error fetching attendance data:', error);
+                document.getElementById("cumulative-percentage").textContent = 'Error';
+            });
+        }
         // Call the function to fetch data when the page loads
-        window.onload = fetchAttendance;
+        window.onload = fetchCumulativePercentage;
     </script>
 </body>
 </html>

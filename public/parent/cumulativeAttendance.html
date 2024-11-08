@@ -26,6 +26,24 @@
             </div>
         </nav>
 
+        <!-- Hero Section with Image Slideshow -->
+        <section class="hero-section">
+            <div class="slideshow-container">
+                <div class="slide fade">
+                    <img src="../assets/amu1.jpg" class="slide-image" alt="AMU Image 1">
+                </div>
+                <div class="slide fade">
+                    <img src="../assets/amu2.jpeg" class="slide-image" alt="AMU Image 2">
+                </div>
+                <div class="slide fade">
+                    <img src="../assets/amu3.png" class="slide-image" alt="AMU Image 3">
+                </div>
+                <div class="slide fade">
+                    <img src="../assets/amu4.jpg" class="slide-image" alt="AMU Image 4">
+                </div>
+            </div>
+        </section>
+
         <!-- Cumulative Attendance Card Section -->
         <section class="cards-section">
             <div class="card" style="width: 75%;">
@@ -34,7 +52,7 @@
                     <thead>
                         <tr>
                             <th>S.No</th>
-                            <th>Course Code</th>
+                            <th>Course Name</th>
                             <th>Classes Held</th>
                             <th>Present</th>
                             <th>Percentage</th>
@@ -53,10 +71,11 @@
             </div>
         </section>
 
-        <footer style="position: absolute; bottom: 0;">
+        <footer>
             <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
         </footer>
     </div>
+    <script src="../script/slideshow.js"></script>
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
     <script>
         // Logout function
@@ -78,9 +97,16 @@
             }
         }
 
-        // Fetch the student name from localStorage and display it in the navbar
-        document.addEventListener("DOMContentLoaded", () => {
-            const studentName = localStorage.getItem("studentName") || "Student Name"; // Fallback in case name is not available
+        // Fetch the student name from database and display it in the navbar
+        document.addEventListener("DOMContentLoaded", async () => {
+            const response = await fetch("/api/student-profile", {
+                    method: "GET",
+                    credentials: "same-origin", // Ensures cookies are included in the request
+                    headers: { "Content-Type": "application/json" }
+                });
+                student = await response.json();
+                studentName = student.name;
+
             document.querySelector(".dropbtn").innerHTML = `
                 <img id="student-image" src="../assets/user'sPic.jpeg" alt="Student Image" class="student-image"> 
                 ${studentName} &#9662;
@@ -88,41 +114,43 @@
         });
 
         // Fetch student attendance data from API and populate the table
-        function fetchAttendanceData() {
-            fetch('http://localhost:3000/api/cumulative-attendance')
-                .then(response => response.json())
-                .then(data => {
-                    const attendanceDataElement = document.getElementById('attendance-data');
-                    let totalHeld = 0;
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch(`/api/cumulative-attendance`,{
+                    method: "GET",
+                    credentials: "same-origin", // Ensures cookies are included in the request
+                    headers: { "Content-Type": "application/json" }
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    const tbody = document.getElementById("attendance-data");
+                    let totalClassesHeld = 0;
                     let totalPresent = 0;
 
-                    // Populate the table with data from the server
-                    data.forEach((attendance, index) => {
-                        const row = document.createElement('tr');
+                    data.attendanceData.forEach((item) => {
+                        const row = document.createElement("tr");
                         row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td>${attendance.courseCode}</td>
-                            <td>${attendance.classesHeld}</td>
-                            <td>${attendance.present}</td>
-                            <td>${((attendance.present / attendance.classesHeld) * 100).toFixed(2)}%</td>
+                            <td>${item.sNo}</td>
+                            <td>${item.subName}</td>
+                            <td>${item.classesHeld}</td>
+                            <td>${item.present}</td>
+                            <td>${item.percentage}%</td>
                         `;
-                        attendanceDataElement.appendChild(row);
-
-                        totalHeld += attendance.classesHeld;
-                        totalPresent += attendance.present;
+                        tbody.appendChild(row);
+                        totalClassesHeld += item.classesHeld;
+                        totalPresent += item.present;
                     });
 
-                    // Calculate and display cumulative percentage
-                    const cumulativePercentage = ((totalPresent / totalHeld) * 100).toFixed(2);
-                    document.getElementById('cumulative-percentage').textContent = `${cumulativePercentage}%`;
-                })
-                .catch(error => {
-                    console.error('Error fetching cumulative attendance:', error);
-                });
-        }
-
-        // Call the function when the page loads
-        window.onload = fetchAttendanceData;
+                    const cumulativePercentage = ((totalPresent / totalClassesHeld) * 100).toFixed(2);
+                    document.getElementById("cumulative-percentage").textContent = `${cumulativePercentage}%`;
+                } else {
+                    console.error("Failed to fetch attendance data:", data.error);
+                }
+            } catch (error) {
+                console.error("Error fetching attendance data:", error);
+            }
+        });
     </script>
 </body>
 </html>
