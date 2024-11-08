@@ -20,7 +20,7 @@
                     </button>
                     <div class="dropdown-content">
                         <a href="./profile.html"><i class="fa-regular fa-address-card fa-fade"></i> Profile</a>
-                        <a href="./parentLogin.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
+                        <a href="#" onclick="logoutParent()"><i class="fa-solid fa-arrow-right-from-bracket fa-fade"></i> <i class="fa-solid fa-person-walking fa-fade"></i> Logout</a>
                     </div>
                 </div>
             </div>
@@ -57,10 +57,27 @@
             <p><i class="fa-solid fa-code fa-fade"></i> Developed by <a href="https://github.com/mohdyusuf2312" target="_blank"><strong>Mohd Yusuf</strong></a></p>
         </footer>
     </div>
-
     <script src="https://kit.fontawesome.com/740d826d31.js" crossorigin="anonymous"></script>
-
     <script>
+        // Logout function
+        async function logoutParent() {
+            try {
+                const response = await fetch("/studentLogout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ logout: true }),
+                });
+                if (response.ok) {
+                    localStorage.removeItem("studentName");
+                    window.location.href = "./parentLogin.html";
+                } else {
+                    throw new Error("Logout failed");
+                }
+            } catch (error) {
+                console.error("Error logging out parent:", error);
+            }
+        }
+
         // Fetch the student name from localStorage and display it in the navbar
         document.addEventListener("DOMContentLoaded", () => {
             const studentName = localStorage.getItem("studentName") || "Student Name"; // Fallback in case name is not available
