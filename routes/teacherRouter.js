@@ -210,4 +210,9 @@ router.get('/teacherProfile', async (req, res) => {
     }
 });
 
+router.post('/teacherLogout', (req, res) => {
+    res.clearCookie('teacherToken');
+    res.status(200).send({ message: "Logout successful" });
+});
+
 module.exports = router;

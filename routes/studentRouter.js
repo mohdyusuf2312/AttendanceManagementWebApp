@@ -92,4 +92,9 @@ router.get('/api/student-profile', async (req, res) => {
     }
 });
 
+router.post('/studentLogout', (req, res) => {
+    res.clearCookie('studentToken');
+    res.status(200).send({ message: "Logout successful" });
+});
+
 module.exports = router;
