@@ -74,8 +74,6 @@
                         document.getElementById("facultyError").textContent = result.message;
                     }
                 } else {
-                    // Store studentName in localStorage
-                    localStorage.setItem("studentName", result.studentName);
                     // Redirect to parent dashboard
                     window.location.href = "../parent/parentDashboard.html";
                 }
