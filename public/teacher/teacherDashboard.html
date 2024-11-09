@@ -52,8 +52,8 @@
                     <select id="d_course" required onchange="d_loadSemesters()">
                         <option value="">Select a course</option>
                         <option value="MCA">MCA</option>
-                        <option value="MSc_Cyber">M.Sc Cyber</option>
-                        <option value="BSc">B.Sc</option>
+                        <option value="M.Sc Cyber">M.Sc Cyber</option>
+                        <option value="B.Sc">B.Sc</option>
                     </select>
 
                     <label for="semester">Semester:</label>
@@ -79,8 +79,8 @@
                     <select id="course" required onchange="loadSemesters()">
                         <option value="">Select a course</option>
                         <option value="MCA">MCA</option>
-                        <option value="MSc_Cyber">M.Sc Cyber</option>
-                        <option value="BSc">B.Sc</option>
+                        <option value="M.Sc Cyber">M.Sc Cyber</option>
+                        <option value="B.Sc">B.Sc</option>
                     </select>
 
                     <label for="semester">Semester:</label>
@@ -155,7 +155,7 @@
             semesterDropdown.innerHTML = '<option value="">Select a semester</option>';
 
             let semesters = 4;
-            if (course === "BSc") semesters = 8;
+            if (course === "B.Sc") semesters = 8;
 
             for (let i = 1; i <= semesters; i++) {
                 semesterDropdown.innerHTML += `<option value="${i}">Semester ${i}</option>`;
@@ -168,7 +168,7 @@
             semesterDropdown.innerHTML = '<option value="">Select a semester</option>';
 
             let semesters = 4;
-            if (course === "BSc") semesters = 8;
+            if (course === "B.Sc") semesters = 8;
 
             for (let i = 1; i <= semesters; i++) {
                 semesterDropdown.innerHTML += `<option value="${i}">Semester ${i}</option>`;
