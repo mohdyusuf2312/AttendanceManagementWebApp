@@ -1,6 +1,6 @@
 {
   "name": "attendancemanagementwebapp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Mini Project",
   "main": "server.js",
   "scripts": {
@@ -17,7 +17,6 @@
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "ejs": "^3.1.10",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.2",
