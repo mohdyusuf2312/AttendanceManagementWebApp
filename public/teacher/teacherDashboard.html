@@ -318,8 +318,6 @@
                 const detainedStudents = await studentRes.json();
                 const teacher = await teacherRes.json();
                 const teacherDepartment = teacher.department;
-                console.log(detainedStudents);
-                console.log(teacherDepartment);
 
                 // Generate the PDF with jsPDF
                 const { jsPDF } = window.jspdf;
@@ -360,7 +358,7 @@
                 // Draw a line below headers
                 yPosition += 5;
                 doc.line(10, yPosition, pageWidth - 10, yPosition);
-                console.log(detainedStudents);
+
                 // Table Rows
                 detainedStudents.forEach((student, index) => {
                     yPosition += 10;
