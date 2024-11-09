@@ -33,23 +33,6 @@ app.use('/', studentRoutes);
 app.use('/', teacherRoutes);
 app.use('/', attendanceRoutes);
 
-// Endpoint to fetch cumulative attendance
-app.get('/api/attendance', async (req, res) => {
-    const enrollmentNumber = req.query.enrollment_number;
-
-    try {
-        const student = await Student.findOne({ enrollment_number: enrollmentNumber.toUpperCase() });
-        if (student) {
-            res.json({ cumulative_attendance_percentage: student.cumulative_attendance_percentage });
-        } else {
-            res.json({ cumulative_attendance_percentage: 'No data found' });
-        }
-    } catch (err) {
-        console.error('Error fetching data:', err);
-        res.status(500).json({ error: 'Failed to fetch data' });
-    }
-});
-
 // Start the server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
