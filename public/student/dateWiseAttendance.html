@@ -155,7 +155,7 @@
                 return;
             }
 
-            fetch(`http://localhost:3000/api/date-wise-attendance?from=${fromDate}&to=${toDate}&subject=${selectedSubject}`)
+            fetch(`/api/date-wise-attendance?from=${fromDate}&to=${toDate}&subject=${selectedSubject}`)
                 .then(response => response.json())
                 .then(data => {
                     const attendanceDataElement = document.getElementById('attendance-data');
