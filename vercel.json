@@ -1,0 +1,24 @@
+{
+    "rewrites": [
+      { "source": "/old-path", "destination": "/new-path" }
+    ],
+    "redirects": [
+      { "source": "/", "destination": "/home", "statusCode": 301 }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/"
+      }
+    ],
+    "build": [{
+        "env": {
+          "MONGODB_URI": "@mongodb-uri"
+        }
+      },
+    {
+      "src": "./server.js",
+      "use": "@vercel/node"
+    }]
+}
+  
