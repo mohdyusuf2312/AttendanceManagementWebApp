@@ -35,7 +35,7 @@ router.post("/api/attendance", async (req, res) => {
         const attendanceRecords = attendance.map(item => ({
             enrollment_number: item.enrollment_number,  // Ensure this is an ObjectId if referring to Student model
             sub_name: subject,                           // This should match `Subject` schema in MongoDB
-            date: new Date(),                            // Current date for each attendance record
+            date: new Date().toISOString().split('T')[0],                            // Current date for each attendance record
             status: item.present ? 'present' : 'absent',
             course,
             semester,
@@ -171,23 +171,30 @@ router.get('/api/cumulative-attendance', async (req, res) => {
 });
 
 // Fetch date-wise attendance
-router.get('/date-wise-attendance', async (req, res) => {
+router.get('/api/date-wise-attendance', async (req, res) => {
     const { from, to, subject } = req.query;
-    const studentId = req.user._id;
-
     try {
+        // Verify and decode JWT token from cookies
+        const token = req.cookies.studentToken;
+        if (!token) {
+            return res.status(401).send({ message: "Unauthorized. Please log in." });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const enrollment_number = decoded.enrollment_number;
+
         const attendanceData = await Attendance.find({
-            studentId,
-            subject,
-            date: { $gte: new Date(from), $lte: new Date(to) }
+            enrollment_number,
+            sub_name: subject,
+            date: { $gte: from, $lte: to }
         }).sort({ date: 1 });
 
         // Format the data for the frontend
         const formattedData = attendanceData.map(item => ({
             date: item.date.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+            subject: item.sub_name,
             status: item.status
         }));
-
         res.json(formattedData);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch attendance' });
