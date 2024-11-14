@@ -44,6 +44,52 @@
         </section>
 
         <section class="cards-section">
+            <!-- New Attendance Report Section -->
+            <div class="card" style="width: 75%;">
+                <h3>Student Attendance Report</h3>
+                <form id="attendance-report-form">
+                    <label for="report-course">Course:</label>
+                    <select id="report-course" required onchange="loadReportSemesters()">
+                        <option value="">Select a course</option>
+                        <option value="MCA">MCA</option>
+                        <option value="M.Sc Cyber">M.Sc Cyber</option>
+                        <option value="B.Sc">B.Sc</option>
+                    </select>
+        
+                    <label for="report-semester">Semester:</label>
+                    <select id="report-semester" required onchange="loadReportSubjects()">
+                        <option value="">Select a semester</option>
+                    </select>
+        
+                    <label for="report-subject">Subject:</label>
+                    <select id="report-subject" required>
+                        <option value="">Select a subject</option>
+                    </select>
+                </form>
+                <div>
+                    <button class="button" style="font-size: medium;" onclick="generateAttendanceTable()">
+                        <i class="fa-regular fa-file-excel fa-bounce"></i> Generate Attendance Report
+                    </button>
+                </div>
+            </div>
+        
+            <!-- Table Container for Attendance -->
+            <div class="table-container" id="attendance-table-container" style="display: none; width: 90%;">
+                <h3>Attendance Table</h3>
+                <table id="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Enrollment No.</th>
+                            <th>Name</th>
+                            <!-- Dates will be dynamically added here -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Student attendance data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            
             <!-- Detained Student Report -->
             <div class="card" style="width: 75%;">
                 <h3>Detained Student</h3>
@@ -162,6 +208,19 @@
             }
         }
         
+        function loadReportSemesters() {
+            const course = document.getElementById("report-course").value;
+            const semesterDropdown = document.getElementById("report-semester");
+            semesterDropdown.innerHTML = '<option value="">Select a semester</option>';
+
+            let semesters = 4;
+            if (course === "B.Sc") semesters = 8;
+
+            for (let i = 1; i <= semesters; i++) {
+                semesterDropdown.innerHTML += `<option value="${i}">Semester ${i}</option>`;
+            }
+        }
+        
         function d_loadSemesters() {
             const course = document.getElementById("d_course").value;
             const semesterDropdown = document.getElementById("d_semester");
@@ -179,6 +238,26 @@
             const course = document.getElementById("course").value;
             const semester = document.getElementById("semester").value;
             const subjectDropdown = document.getElementById("subject");
+
+            if (!course || !semester) return;  // Ensure both course and semester are selected
+
+            try {
+                const response = await fetch(`/api/subjects?course=${course}&semester=${semester}`);
+                const subjects = await response.json();
+
+                subjectDropdown.innerHTML = '<option value="">Select a subject</option>';
+                subjects.forEach(subject => {
+                    subjectDropdown.innerHTML += `<option value="${subject}">${subject}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading subjects:', error);
+            }
+        }
+
+        async function loadReportSubjects() {
+            const course = document.getElementById("report-course").value;
+            const semester = document.getElementById("report-semester").value;
+            const subjectDropdown = document.getElementById("report-subject");
 
             if (!course || !semester) return;  // Ensure both course and semester are selected
 
@@ -373,6 +452,38 @@
             } catch (error) {
                 console.error("Error generating report:", error);
                 alert("Error generating report.");
+            }
+        }
+
+        async function generateAttendanceTable() {
+            const course = document.getElementById("report-course").value;
+            const semester = document.getElementById("report-semester").value;
+            const subject = document.getElementById("report-subject").value;
+
+            if (!course || !semester || !subject) {
+                alert("Please select course, semester, and subject.");
+                return;
+            }
+
+            try {
+                // Request the Excel file
+                const response = await fetch(`/api/attendanceTable?course=${course}&semester=${semester}&subject=${subject}`);
+                const data = await response.blob(); // Get the file as a blob
+
+                // Create a URL for the blob and initiate download
+                const downloadUrl = window.URL.createObjectURL(data);
+                const a = document.createElement("a");
+                a.href = downloadUrl;
+                a.download = `${course}_${semester}_${subject}.xlsx`; // Set default file name
+                document.body.appendChild(a);
+                a.click();
+
+                // Clean up
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(downloadUrl);
+            } catch (error) {
+                console.error("Error generating attendance table:", error);
+                alert("Error generating attendance table.");
             }
         }
     </script>
