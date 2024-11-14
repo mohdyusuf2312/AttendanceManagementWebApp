@@ -454,18 +454,18 @@ input:checked + .slider:before {
 }
 
 /* Styling for form */
-#detained-form, #attendance-form {
+#detained-form, #attendance-form, #attendance-report-form {
     display: flex;
     flex-direction: row ;
     gap: 10px;
     margin-bottom: 20px;
 }
 
-#detained-form label, #attendance-form label {
+#detained-form label, #attendance-form label, #attendance-report-form label {
     font-weight: bold;
 }
 
-#detained-form input, #detained-form select, #attendance-form input, #attendance-form select {
+#detained-form input, #detained-form select, #attendance-form input, #attendance-form select, #attendance-report-form input, #attendance-report-form select {
     padding: 6px;
     font-size: 14px;
     width: 30%;
@@ -504,7 +504,7 @@ input:checked + .slider:before {
         min-width: 50%;
     }
 
-    #detained-form, #attendance-form {
+    #detained-form, #attendance-form, #attendance-report-form {
         display: flex;
         flex-direction: column;
     }
@@ -563,7 +563,7 @@ input:checked + .slider:before {
         min-width: 50%;
     }
 
-    #detained-form, #attendance-form {
+    #detained-form, #attendance-form, #attendance-report-form {
         display: flex;
         flex-direction: column;
     }
