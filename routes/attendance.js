@@ -4,6 +4,7 @@ const Attendance = require('../models/Attendance');
 const Student = require('../models/Student');
 const Subject = require('../models/Subject');
 const jwt = require('jsonwebtoken');
+const ExcelJS = require('exceljs'); // Import the ExcelJS library
 
 // In attendance.js route file
 router.get("/api/students", async (req, res) => {
@@ -198,6 +199,100 @@ router.get('/api/date-wise-attendance', async (req, res) => {
         res.json(formattedData);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch attendance' });
+    }
+});
+
+router.get('/api/attendanceTable', async (req, res) => {
+    const { course, semester, subject } = req.query;
+
+    // Validate the inputs
+    if (!course || !semester || !subject) {
+        return res.status(400).json({ error: "Missing required query parameters: course, semester, subject" });
+    }
+
+    try {
+        // Step 1: Fetch all attendance records filtered by course, semester, and subject
+        const attendanceRecords = await Attendance.find({
+            course: course,
+            semester: semester,
+            sub_name: subject
+        }).sort({ date: 1 }); // Sort records by date for easier table organization
+
+        // Step 2: Organize attendance data by each student and each date
+        const studentAttendanceDetails = {};
+        const uniqueDates = new Set(); // To store unique dates
+
+        attendanceRecords.forEach(record => {
+            const { enrollment_number, status, date } = record;
+
+            // Add date to uniqueDates set
+            uniqueDates.add(date.toISOString().split('T')[0]);
+
+            // Initialize the student's record if it doesn't exist
+            if (!studentAttendanceDetails[enrollment_number]) {
+                studentAttendanceDetails[enrollment_number] = {
+                    name: "",
+                    attendance: {}
+                };
+            }
+
+            // Update attendance data for the specific date
+            studentAttendanceDetails[enrollment_number].attendance[date.toISOString().split('T')[0]] = status;
+        });
+
+        // Step 3: Fetch student details
+        const enrollmentNumbers = Object.keys(studentAttendanceDetails);
+        const students = await Student.find({ enrollment_number: { $in: enrollmentNumbers } });
+
+        students.forEach(student => {
+            const { enrollment_number, first_name, last_name } = student;
+
+            // Set student's name in the attendance details
+            if (studentAttendanceDetails[enrollment_number]) {
+                studentAttendanceDetails[enrollment_number].name = `${first_name} ${last_name}`;
+            }
+        });
+
+        // Step 4: Create a new Excel workbook
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Attendance');
+
+        // Step 5: Add headers
+        const headers = ['Enrollment No.', 'Name', ...Array.from(uniqueDates)];
+        worksheet.addRow(headers);
+
+        // Step 6: Populate rows with student attendance data
+        enrollmentNumbers.forEach(enrollment => {
+            const student = studentAttendanceDetails[enrollment];
+            const row = [
+                enrollment,
+                student.name,
+                ...Array.from(uniqueDates).map(date => {
+                    const status = student.attendance[date];
+                    // Return the appropriate status
+                    if (status === 'present') {
+                        return 'P';
+                    } else if (status === 'absent') {
+                        return 'A';
+                    } else {
+                        return 'NA'; // No data
+                    }
+                })
+            ];
+            worksheet.addRow(row);
+        });
+
+        // Step 7: Set response headers to trigger file download
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=attendance.xlsx');
+
+        // Step 8: Write Excel file to response stream
+        await workbook.xlsx.write(res);
+        res.end();
+
+    } catch (error) {
+        console.error("Error generating attendance report:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
