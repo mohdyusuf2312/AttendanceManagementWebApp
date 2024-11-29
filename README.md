@@ -52,7 +52,7 @@ Make sure you have the following installed:
    mongodb
 5. **Run the application**:
    ```bash
-   npm run dev
+   npx nodemon server.js
   The server will be running at http://localhost:3000.
 
 ## API Endpoints
