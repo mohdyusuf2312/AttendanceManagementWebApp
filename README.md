@@ -39,7 +39,7 @@ Make sure you have the following installed:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/mohdyusuf2312/AttendanceManagementWebApp.git
-   cd attendance-management-web-app
+   cd AttendanceManagementWebApp
 2. **Install dependencies**:
    ```bash
    npm install bcrypt cookie-parser cors exceljs express jsonwebtoken mongoose nodemailer dotenv nodemon
