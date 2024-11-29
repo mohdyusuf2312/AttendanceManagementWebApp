@@ -47,6 +47,8 @@ Make sure you have the following installed:
    ```bash
    MONGO_URI=mongodb://localhost:27017/amu_attendance
    JWT_SECRET=your_jwt_secret_key
+   EMAIL=example@gmail.com
+   EMAIL_PASSWORD=xxxx xxxx xxxx xxxx
 4. **Start the MongoDB server (if it's not already running)**:
    ```bash
    mongodb
