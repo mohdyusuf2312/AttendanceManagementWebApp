@@ -38,11 +38,15 @@ Make sure you have the following installed:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/attendance-management-web-app.git
+   git clone https://github.com/your-username/AttendanceManagementWebApp.git
    cd attendance-management-web-app
 2. **Install dependencies**:
    ```bash
-   npm install
+   npm install bcrypt cookie-parser cors exceljs express jsonwebtoken mongoose nodemailer
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.7"
 3. **Create a .env file in the root directory and add the following environment variables**:
    ```bash
    MONGO_URI=mongodb://localhost:27017/amu_attendance
