@@ -42,7 +42,7 @@ Make sure you have the following installed:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/mohdyusuf2312/AttendanceManagementWebApp.git
-   cd attendance-management-web-app
+   cd AttendanceManagementWebApp
 2. **Install dependencies**:
    ```bash
    npm install bcrypt cookie-parser cors exceljs express jsonwebtoken mongoose nodemailer dotenv nodemon
@@ -52,6 +52,7 @@ Make sure you have the following installed:
    JWT_SECRET=your_jwt_secret_key
    EMAIL=example@gmail.com
    EMAIL_PASSWORD=xxxx xxxx xxxx xxxx
+
 4. **Run the application**:
    ```bash
    npx nodemon server.js
