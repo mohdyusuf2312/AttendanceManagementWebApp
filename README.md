@@ -1,7 +1,7 @@
 # Attendance Management Web Application
 
 ## Overview
-The **Attendance Management Web Application** is designed to help students and teachers efficiently manage and track attendance records. The system allows teachers to manually mark attendance, and students can view their attendance data, including subject-wise and cumulative reports. Additionally, students can filter and view their attendance data based on date ranges, providing them with a detailed overview of their academic participation.
+The **Attendance Management Web Application** is designed to help students and teachers efficiently manage and track attendance records. The system allows teachers to manually mark attendance, and students can view their attendance data, including subject-wise and cumulative reports. Additionally, students can filter and view their attendance data based on date ranges.
 
 ## Features
 - **Teacher Dashboard**: Teachers can view a list of courses, select a course, and mark attendance for each student using a toggle button.
@@ -12,10 +12,9 @@ The **Attendance Management Web Application** is designed to help students and t
 
 ## Technologies Used
 - **Frontend**: 
-  - HTML5
-  - CSS3
+  - HTML
+  - CSS
   - JavaScript
-  - Bootstrap (for responsiveness)
 - **Backend**:
   - Node.js
   - Express.js
@@ -25,6 +24,10 @@ The **Attendance Management Web Application** is designed to help students and t
   - CORS (for cross-origin requests)
   - JWT (for authentication)
   - bcrypt.js (for password hashing)
+  - cookie-parser
+  - exceljs
+  - nodemailer
+  - dotenv
   
 ## Installation and Setup
 
@@ -49,28 +52,34 @@ Make sure you have the following installed:
    JWT_SECRET=your_jwt_secret_key
    EMAIL=example@gmail.com
    EMAIL_PASSWORD=xxxx xxxx xxxx xxxx
-4. **Start the MongoDB server (if it's not already running)**:
-   ```bash
-   mongodb
-5. **Run the application**:
+
+4. **Run the application**:
    ```bash
    npx nodemon server.js
   The server will be running at http://localhost:3000.
 
 ## API Endpoints
 ### Authentication Endpoints
-POST /api/users/login: Login a student/teacher.
-POST /api/users/register: Register a new student/teacher.
+POST /register: Register a new teacher.
+POST /teacherLogin: Login a teacher.
+POST /forgotPassword: Forgot password for teacher's account.
+POST /resetPassword/:token: Reset password for teacher's account.
+POST /teacherLogout: Logout a teacher.
+POST /login: Login a student.
+POST /studentLogout: Logout a student.
 
 ### Attendance Endpoints
+POST /api/attendance: Mark attendance for students in a course (teacher only).
+GET /api/attendanceTable: Fetch attendance data for particular subject (teacher only).
+GET /api/attendanceReport: Fetch attendance report for detained students (teacher only).
 GET /api/cumulative-attendance: Fetch cumulative attendance report for the logged-in student.
 GET /api/date-wise-attendance: Fetch attendance records for a selected subject and date range.
-POST /api/attendance/mark: Mark attendance for students in a course (teacher only).
 
 ### Subject and Profile Endpoints
+GET /api/students: Fetch student details.
 GET /api/subjects: Fetch the list of subjects for the logged-in student.
 GET /api/student-profile: Fetch the profile of the logged-in student.
-GET /api/teacher-profile: Fetch the profile of the logged-in teacher.
+GET /teacherProfile: Fetch the profile of the logged-in teacher.
 
 ## Usage
 ### For Students
@@ -80,25 +89,29 @@ Access your Profile to view personal information.
 
 ### For Teachers
 Login using the teacher credentials.
-View the list of courses on the Teacher Dashboard.
-Select a course and mark attendance for students using the toggle button.
+Select a course, semester and subject to generates attendance data.
+Select a course, semester and subject to generates detained student's report.
+Select a course, semester and subject to mark attendance for students using the toggle button.
 Access your Profile to view personal information.
 
 ## Project Structure
   ```bash
-attendance-management-web-app/
+AttendanceManagementWebApp/
 │
 ├── models/         # MongoDB Schemas for users and attendance
-├── routes/         # API routes (e.g., users, attendance, subjects)
-├── controllers/    # Business logic for routes
 ├── public/         # Static frontend files (HTML, CSS, JS)
 │   ├── assets/     # Images and other assets
-│   ├── styles/     # CSS files
+│   ├── parent/     # Parent module
 │   ├── script/     # JavaScript files for the frontend
-├── config/         # Database and server configurations
-├── server.js       # Main server file (Express setup)
+│   ├── student/    # Student module
+│   ├── teacher/    # Teacher module
+│   ├── styles.css  # CSS File
+│   ├── index.html  # HTML File
+├── routes/         # API routes (e.g., users, attendance, subjects)
+├── .env            # .env file
 ├── package.json    # Project dependencies and scripts
 └── README.md       # Project documentation
+├── server.js       # Main server file (Express setup)
 ```
 
 ## Contributing
