@@ -60,25 +60,25 @@ Make sure you have the following installed:
 
 ## API Endpoints
 ### Authentication Endpoints
-POST /register: Register a new teacher.
-POST /teacherLogin: Login a teacher.
-POST /forgotPassword: Forgot password for teacher's account.
-POST /resetPassword/:token: Reset password for teacher's account.
-POST /teacherLogout: Logout a teacher.
-POST /login: Login a student.
-POST /studentLogout: Logout a student.
+POST /register: Register a new teacher.\n
+POST /teacherLogin: Login a teacher.\n
+POST /forgotPassword: Forgot password for teacher's account.\n
+POST /resetPassword/:token: Reset password for teacher's account.\n
+POST /teacherLogout: Logout a teacher.\n
+POST /login: Login a student.\n
+POST /studentLogout: Logout a student.\n
 
 ### Attendance Endpoints
-POST /api/attendance: Mark attendance for students in a course (teacher only).
-GET /api/attendanceTable: Fetch attendance data for particular subject (teacher only).
-GET /api/attendanceReport: Fetch attendance report for detained students (teacher only).
-GET /api/cumulative-attendance: Fetch cumulative attendance report for the logged-in student.
-GET /api/date-wise-attendance: Fetch attendance records for a selected subject and date range.
+POST /api/attendance: Mark attendance for students in a course (teacher only).\n
+GET /api/attendanceTable: Fetch attendance data for particular subject (teacher only).\n
+GET /api/attendanceReport: Fetch attendance report for detained students (teacher only).\n
+GET /api/cumulative-attendance: Fetch cumulative attendance report for the logged-in student.\n
+GET /api/date-wise-attendance: Fetch attendance records for a selected subject and date range.\n
 
 ### Subject and Profile Endpoints
-GET /api/students: Fetch student details.
-GET /api/subjects: Fetch the list of subjects for the logged-in student.
-GET /api/student-profile: Fetch the profile of the logged-in student.
+GET /api/students: Fetch student details.\n
+GET /api/subjects: Fetch the list of subjects for the logged-in student.\n
+GET /api/student-profile: Fetch the profile of the logged-in student.\n
 GET /teacherProfile: Fetch the profile of the logged-in teacher.
 
 ## Usage
